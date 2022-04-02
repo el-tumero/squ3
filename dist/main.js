@@ -16,7 +16,7 @@
   \*********************/
 /***/ (() => {
 
-eval("\nconst word = 'test';\nconsole.log('witaj');\n\n\n//# sourceURL=webpack://typescript-template/./src/main.ts?");
+eval("\r\nconst canvas = document.getElementById('canvas');\r\nconst ctx = canvas.getContext('2d');\r\nctx.fillStyle = 'green';\r\nctx.fillRect(0, 0, 960, 960);\r\n\n\n//# sourceURL=webpack://typescript-template/./src/main.ts?");
 
 /***/ })
 
