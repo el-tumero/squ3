@@ -1,18 +1,39 @@
+import textures from "./textures/textures";
+// import TextureLayer from "./TextureLayer";
+import BackgroundLayer from "./layers/BackgroundLayer";
+import Player from "./layers/Player";
+
 const canvas = document.getElementById('canvas') as HTMLCanvasElement;
 const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
-ctx.fillStyle = 'green';
-ctx.fillRect(0, 0, 960, 960);
+// canvas 960x960
 
-// async function drawMap() {
-    
-//     await getData();
 
-//     for (let i = 0; i < 960; i+=64) {
-//         for (let j = 0; j < 960; j+=64) {
-//             bg.drawImage(textures[], i, j, 64, 64);
-//         }
-//     }
-//     render();
-// }
 
+// wait til textures load ;)
+textures[0].onload = () => {
+    const backgroundLayer = new BackgroundLayer(ctx, textures[0])
+    // backgroundLayer.draw()
+
+    const player1 = new Player(ctx, 200, 200, textures[1])
+
+
+// basic game loop
+function update() {
+    player1.updatePosition()
+}
+  
+function draw() {
+    backgroundLayer.draw()
+    player1.draw()
+}
+  
+function loop() {
+    update()
+    draw()
+    window.requestAnimationFrame(loop)
+}
+
+window.requestAnimationFrame(loop)
+
+}

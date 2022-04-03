@@ -2,13 +2,39 @@
     margin: 0;
     padding: 0;
 }
-
-#canvasCtn {
+#mainWrapper {
     display: flex;
     justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+}
+#mainCtn {
+    background-color:beige;
+    width: auto;
+}
+#rightCtn {
+    position:fixed;
+    height: 100%;
+    right: 0;
+    width: 10%;
+    border: 1px solid brown;
+    
+}
+#leftCtn {
+    position:fixed;
+    height: 100%;
+    left: 0;
+    width: 10%;
+    border: 1px solid brown;
+}
+#canvasCtn {
+    display: flex;
 }
 
 #canvas {
+    /* margin-top: 1vh; */
     border: 1px solid black;
 }
 
