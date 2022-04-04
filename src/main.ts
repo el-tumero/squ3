@@ -2,6 +2,8 @@ import textures from "./textures/textures";
 // import TextureLayer from "./TextureLayer";
 import BackgroundLayer from "./layers/BackgroundLayer";
 import Player from "./layers/Player";
+import ObjectGrid from "./layers/ObjectGrid";
+import ObjectLayer from "./layers/ObjectLayer";
 
 const canvas = document.getElementById('canvas') as HTMLCanvasElement;
 const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -9,13 +11,22 @@ const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 // canvas 960x960
 
 
+// console.log(obj.grid);
 
 // wait til textures load ;)
-textures[0].onload = () => {
+textures[2].onload = () => {
     const backgroundLayer = new BackgroundLayer(ctx, textures[0])
     // backgroundLayer.draw()
+    const objLayer = new ObjectLayer(ctx, textures)
 
-    const player1 = new Player(ctx, 200, 200, textures[1])
+    const obj = new ObjectGrid()
+    obj.addObject(2, 4, 4)
+    obj.addObject(2, 24, 24)
+
+    objLayer.loadObjects(obj)
+
+
+    const player1 = new Player(ctx, 192, 192, textures[1])
 
 
 // basic game loop
@@ -25,6 +36,7 @@ function update() {
   
 function draw() {
     backgroundLayer.draw()
+    objLayer.draw()
     player1.draw()
 }
   

@@ -18,4 +18,5 @@ const textures = {
     2: water
 }
 
-export default textures;
+// export default textures;
+export default [grass_t, sand_t, water]
