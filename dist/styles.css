@@ -19,7 +19,7 @@
     height: 100%;
     right: 0;
     width: 10%;
-    border: 1px solid brown;
+    /* border: 1px solid brown; */
     
 }
 #leftCtn {
@@ -27,7 +27,7 @@
     height: 100%;
     left: 0;
     width: 10%;
-    border: 1px solid brown;
+    /* border: 1px solid brown; */
 }
 #canvasCtn {
     display: flex;
