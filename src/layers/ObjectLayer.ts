@@ -7,8 +7,8 @@ export default class ObjectLayer extends TextureLayer {
 
     constructor(_domCtx: CanvasRenderingContext2D, _textures:HTMLImageElement[]) {
         super(_domCtx)
-        // this.canvas.width = 1920
-        // this.canvas.height = 1920
+        this.canvas.width = 1920
+        this.canvas.height = 1920
         this.textures = _textures
     } 
 

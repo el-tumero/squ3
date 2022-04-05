@@ -22,6 +22,7 @@ textures[2].onload = () => {
     const obj = new ObjectGrid()
     obj.addObject(2, 4, 4)
     obj.addObject(2, 24, 24)
+    obj.addObject(2, 32, 32)
 
     objLayer.loadObjects(obj)
 
@@ -37,7 +38,7 @@ function update() {
 function draw() {
     ctx.clearRect(0,0,960,960)
     backgroundLayer.draw()
-    //objLayer.draw()
+    objLayer.draw()
     player1.draw()
     
 }

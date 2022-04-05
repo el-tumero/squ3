@@ -3,8 +3,8 @@ export default class ObjectGrid{
     grid:number[][] = []
 
     blockSize:number = 32
-    canvasWidth:number = 960
-    canvasHeight:number = 960
+    canvasWidth:number = 1920
+    canvasHeight:number = 1920
     
     constructor(){
         this.init()

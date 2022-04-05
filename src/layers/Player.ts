@@ -58,7 +58,7 @@ export default class Player extends TextureLayer{
 
     public updatePositionInLayers(bgLayer:BackgroundLayer, objLayer: ObjectLayer):void{
         bgLayer.updatePosition(this.mvUp, this.mvDown, this.mvRight, this.mvLeft)
-        // objLayer.updatePosition(this.mvUp, this.mvDown, this.mvRight, this.mvLeft)
+        objLayer.updatePosition(this.mvUp, this.mvDown, this.mvRight, this.mvLeft)
 
     }
 
