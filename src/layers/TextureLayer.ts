@@ -1,8 +1,11 @@
+import Atlas from "./Atlas"
+
 export default class TextureLayer {
     
     canvas:HTMLCanvasElement
     ctx:CanvasRenderingContext2D
-    domCtx: CanvasRenderingContext2D
+    domCtx:CanvasRenderingContext2D
+    textureAtlas:Atlas
 
     blockSize:number = 32
 
@@ -11,11 +14,12 @@ export default class TextureLayer {
     y:number = 0
     
 
-    constructor(_domCtx: CanvasRenderingContext2D) {
+    constructor(_domCtx: CanvasRenderingContext2D, _textureAtlas:Atlas) {
        const [_ctx, _canvas] = this.createLayer();
        this.canvas = _canvas
        this.ctx = _ctx
        this.domCtx = _domCtx
+       this.textureAtlas = _textureAtlas
 
        this.canvas.width = 960
        this.canvas.height = 960
@@ -34,8 +38,4 @@ export default class TextureLayer {
         let ctx:CanvasRenderingContext2D = canvas.getContext('2d') as CanvasRenderingContext2D
         return [ctx, canvas]
     }
-
-    // public draw():void {
-    //     this.domCtx.drawImage(this.canvas, 0, 0)
-    // }
 }

@@ -1,33 +1,37 @@
 import textures from "./textures/textures";
-// import TextureLayer from "./TextureLayer";
 import BackgroundLayer from "./layers/BackgroundLayer";
 import Player from "./layers/Player";
 import ObjectGrid from "./layers/ObjectGrid";
 import ObjectLayer from "./layers/ObjectLayer";
+import Atlas from "./layers/Atlas";
 
 const canvas = document.getElementById('canvas') as HTMLCanvasElement;
 const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
 // canvas 960x960
 
-
-// console.log(obj.grid);
-
-// wait til textures load ;)
-textures[2].onload = () => {
-    const backgroundLayer = new BackgroundLayer(ctx, textures[0])
-    // backgroundLayer.draw()
-    const objLayer = new ObjectLayer(ctx, textures)
-
-    const obj = new ObjectGrid()
-    obj.addObject(2, 4, 4)
-    obj.addObject(2, 24, 24)
-    obj.addObject(2, 32, 32)
-
-    objLayer.loadObjects(obj)
+const atlasImg:HTMLImageElement = new Image();
+atlasImg.src = '../assets/graphics/atlas.png'
 
 
-    const player1 = new Player(ctx, 480-(32/2), 480-(32/2), textures[1])
+
+atlasImg.onload = () => {
+    const mainAtlas = new Atlas(256, 256, atlasImg, 32)
+    const backgroundLayer = new BackgroundLayer(ctx, mainAtlas, 0)
+    
+
+    const objLayer = new ObjectLayer(ctx, mainAtlas)
+
+    const grid = new ObjectGrid()
+    grid.addObject(2, 4, 4)
+    grid.addObject(2, 24, 24)
+    grid.addObject(2, 32, 32)
+
+
+    objLayer.loadObjects(grid)
+
+
+    const player1 = new Player(ctx, 480-(32/2), 480-(32/2), mainAtlas, 3)
 
 
 // basic game loop

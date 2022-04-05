@@ -1,3 +1,4 @@
+import Atlas from "./Atlas";
 import BackgroundLayer from "./BackgroundLayer";
 import ObjectLayer from "./ObjectLayer";
 import TextureLayer from "./TextureLayer";
@@ -9,17 +10,17 @@ export default class Player extends TextureLayer{
     mvDown:boolean
     mvRight:boolean
     mvLeft:boolean
-    skin:HTMLImageElement
+    skinId:number
 
-    constructor(_domCtx: CanvasRenderingContext2D, _x:number, _y:number, _skin:HTMLImageElement){
-        super(_domCtx)
+    constructor(_domCtx: CanvasRenderingContext2D, _x:number, _y:number, _textureAtlas:Atlas, _skinId:number){
+        super(_domCtx, _textureAtlas)
         this.x = _x
         this.y = _y
         this.mvUp = false
         this.mvDown = false
         this.mvRight = false
         this.mvLeft = false
-        this.skin = _skin
+        this.skinId = _skinId
         this.initControls()
     }
 
@@ -63,7 +64,8 @@ export default class Player extends TextureLayer{
     }
 
     public draw():void{
-        this.domCtx.drawImage(this.skin, this.x, this.y)
+        this.domCtx.drawImage(this.textureAtlas.texture, this.textureAtlas.cords[this.skinId].x, this.textureAtlas.cords[this.skinId].y, this.blockSize, this.blockSize, this.x, this.y, this.blockSize, this.blockSize)
+        // this.domCtx.drawImage(this.skin, this.x, this.y)
     }
 
 
