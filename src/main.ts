@@ -10,14 +10,13 @@ const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
 // canvas 960x960
 
+// loading texture atlas
 const atlasImg:HTMLImageElement = new Image();
 atlasImg.src = '../assets/graphics/atlas.png'
 
-
-
 atlasImg.onload = () => {
     const mainAtlas = new Atlas(256, 256, atlasImg, 32)
-    const backgroundLayer = new BackgroundLayer(ctx, mainAtlas, 0)
+    const backgroundLayer = new BackgroundLayer(ctx, mainAtlas, 1)
     
 
     const objLayer = new ObjectLayer(ctx, mainAtlas)
@@ -27,11 +26,20 @@ atlasImg.onload = () => {
     grid.addObject(2, 24, 24)
     grid.addObject(2, 32, 32)
 
+    grid.addObject(2, 12, 14)
+
+
+    for (let i = 0; i < 6; i++) {
+        grid.addObject(2, 3, i)
+        grid.addObject(2, 4, i)
+        
+    }
+
 
     objLayer.loadObjects(grid)
 
 
-    const player1 = new Player(ctx, 480-(32/2), 480-(32/2), mainAtlas, 3)
+    const player1 = new Player(ctx, 480-(32/2), 480-(32/2), mainAtlas, 18)
 
 
 // basic game loop
@@ -44,7 +52,6 @@ function draw() {
     backgroundLayer.draw()
     objLayer.draw()
     player1.draw()
-    
 }
   
 function loop() {

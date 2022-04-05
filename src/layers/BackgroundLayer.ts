@@ -17,7 +17,15 @@ export default class BackgroundLayer extends TextureLayer{
     private setBackground():void{
         for(let i = 0; i<this.canvas.width/this.blockSize; i++){
             for (let j = 0; j < this.canvas.height/this.blockSize; j++) {
-                this.ctx.drawImage(this.textureAtlas.texture, this.textureAtlas.cords[this.textureId].x, this.textureAtlas.cords[this.textureId].y, this.blockSize, this.blockSize, i*this.blockSize, j*this.blockSize, this.blockSize, this.blockSize)
+                this.ctx.drawImage(this.textureAtlas.texture, 
+                    this.textureAtlas.cords[this.textureId].x, 
+                    this.textureAtlas.cords[this.textureId].y, 
+                    this.blockSize, 
+                    this.blockSize, 
+                    i*this.blockSize, 
+                    j*this.blockSize, 
+                    this.blockSize, 
+                    this.blockSize)
             }
         }
     }
