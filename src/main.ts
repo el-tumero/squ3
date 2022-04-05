@@ -26,18 +26,20 @@ textures[2].onload = () => {
     objLayer.loadObjects(obj)
 
 
-    const player1 = new Player(ctx, 192, 192, textures[1])
+    const player1 = new Player(ctx, 480-(32/2), 480-(32/2), textures[1])
 
 
 // basic game loop
 function update() {
-    player1.updatePosition()
+    player1.updatePositionInLayers(backgroundLayer, objLayer)
 }
   
 function draw() {
+    ctx.clearRect(0,0,960,960)
     backgroundLayer.draw()
-    objLayer.draw()
+    //objLayer.draw()
     player1.draw()
+    
 }
   
 function loop() {

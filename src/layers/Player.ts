@@ -1,3 +1,5 @@
+import BackgroundLayer from "./BackgroundLayer";
+import ObjectLayer from "./ObjectLayer";
 import TextureLayer from "./TextureLayer";
 
 export default class Player extends TextureLayer{
@@ -8,7 +10,6 @@ export default class Player extends TextureLayer{
     mvRight:boolean
     mvLeft:boolean
     skin:HTMLImageElement
-    speed:number = 3
 
     constructor(_domCtx: CanvasRenderingContext2D, _x:number, _y:number, _skin:HTMLImageElement){
         super(_domCtx)
@@ -55,11 +56,9 @@ export default class Player extends TextureLayer{
         })
     }
 
-    public updatePosition():void{
-        if(this.mvUp) this.y -= this.speed
-        if(this.mvDown) this.y += this.speed
-        if(this.mvRight) this.x += this.speed
-        if(this.mvLeft) this.x -= this.speed
+    public updatePositionInLayers(bgLayer:BackgroundLayer, objLayer: ObjectLayer):void{
+        bgLayer.updatePosition(this.mvUp, this.mvDown, this.mvRight, this.mvLeft)
+        // objLayer.updatePosition(this.mvUp, this.mvDown, this.mvRight, this.mvLeft)
 
     }
 
