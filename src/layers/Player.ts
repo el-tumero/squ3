@@ -14,6 +14,8 @@ export default class Player extends TextureLayer{
     mvLeft:boolean
     skinId:number
     facing:String = 'none'
+    speedX:number = 3
+    speedY: number = 3;
 
     constructor(_domCtx: CanvasRenderingContext2D, _x:number, _y:number, _textureAtlas:Atlas, _skinId:number){
         super(_domCtx, _textureAtlas)
@@ -82,58 +84,81 @@ export default class Player extends TextureLayer{
 
     public updatePositionInLayers(bgLayer:BackgroundLayer, objLayer: ObjectLayer):void{
 
+        let horizontalRect = {
+            x: this.realX + this.speed,
+            y: this.realY,
+            width: this.blockSize,
+            height: this.blockSize
+        }
 
+        let verticalRect = {
+            x: this.realX,
+            y: this.realY + this.speed,
+            width: this.blockSize,
+            height: this.blockSize
+        }
 
-        if(this.isCollide({x: this.realX, y: this.realY, height: 32, width:32}, {x: 12*this.blockSize, y: 14*this.blockSize, height: 32, width:32})){
-            if(this.facing == 'left'){
-                this.mvLeft = false
-            } 
+        let border = {
+            x: 12*this.blockSize,
+            y: 14*this.blockSize,
+            width: 32,
+            height: 32
+        }
 
-            if(this.facing == 'down'){
-                this.mvDown = false
+        
+        if(this.mvUp) this.realY -= this.speed
+        if(this.mvDown) this.realY += this.speed
+        if(this.mvRight) this.realX += this.speed
+        if(this.mvLeft) this.realX -= this.speed
+        
+        bgLayer.updatePosition(this.mvUp, this.mvDown, this.mvRight, this.mvLeft)
+        objLayer.updatePosition(this.mvUp, this.mvDown, this.mvRight, this.mvLeft)
+        
+
+        let speedY:number = Math.sign(horizontalRect.y - border.y) * 3
+        let speedX:number = Math.sign(horizontalRect.x - border.x) * 3
+
+        if(this.isCollide(verticalRect, border) && this.isCollide(horizontalRect, border)){
+            console.log(speedX, speedY)
+        
+            while(speedY > 0){
+                this.realY += 2 * speedY
+                bgLayer.y = bgLayer.y - 2 * speedY
+                objLayer.y = objLayer.y - 2 * speedY
+                speedY = 0
             }
 
-            if(this.facing == 'up'){
-                this.mvUp = false
+            while(speedX > 0){
+                this.realX += 2 * speedX
+                bgLayer.x = bgLayer.x - 2 * speedX
+                objLayer.x = objLayer.x - 2* speedX
+                speedX = 0
             }
 
-            if(this.facing == 'right'){
-                this.mvRight = false
-            }
-
+        }
+        else if(this.isCollide(verticalRect, border)){
             
+            this.realY += speedY
 
+            console.log('vert ' + speedY, this.realX, this.realY)
 
-
-
-            bgLayer.updatePosition(this.mvUp, this.mvDown, this.mvRight, this.mvLeft)
-            objLayer.updatePosition(this.mvUp, this.mvDown, this.mvRight, this.mvLeft)
-
-                if(this.mvUp) this.realY -= this.speed
-                if(this.mvDown) this.realY += this.speed
-                if(this.mvRight) this.realX += this.speed
-                if(this.mvLeft) this.realX -= this.speed
-
-            console.log('coolll')
-            // if(this.facing == 'up'){
-            //     bgLayer.y -= 0.3
-            //     objLayer.y -= 0.3
-            //     this.realY += 0.3
-            // }
-            // bgLayer.x =- 1
-            // bgLayer.y =- 1
-            // this.realX +=
-            //console.log('Collision!')
+            bgLayer.y = bgLayer.y - speedY
+            objLayer.y = objLayer.y - speedY
+            // console.log('vert ')
         }
-
-        if(!this.isCollide({x: this.realX, y: this.realY, height: 32, width:32}, {x: 12*this.blockSize, y: 14*this.blockSize, height: 32, width:32})){
-            bgLayer.updatePosition(this.mvUp, this.mvDown, this.mvRight, this.mvLeft)
-            objLayer.updatePosition(this.mvUp, this.mvDown, this.mvRight, this.mvLeft)
-            if(this.mvUp) this.realY -= this.speed
-            if(this.mvDown) this.realY += this.speed
-            if(this.mvRight) this.realX += this.speed
-            if(this.mvLeft) this.realX -= this.speed
+        else if(this.isCollide(horizontalRect, border)){
+            
+            this.realX += speedX
+            console.log('horiz ' + speedX, this.realX, this.realY)
+            bgLayer.x = bgLayer.x - speedX
+            objLayer.x = objLayer.x - speedX
+        
         }
+       
+
+
+        
+        
 
         
 

@@ -39,7 +39,7 @@ atlasImg.onload = () => {
     objLayer.loadObjects(grid)
 
 
-    const player1 = new Player(ctx, 480-(32/2), 480-(32/2), mainAtlas, 18)
+    const player1 = new Player(ctx, 480-(32/2), 480-(32/2), mainAtlas, 3)
 
 
 // basic game loop
