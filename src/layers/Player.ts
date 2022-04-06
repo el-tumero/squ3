@@ -107,14 +107,14 @@ export default class Player extends TextureLayer{
         objLayer.updatePosition(this.mvUp, this.mvDown, this.mvRight, this.mvLeft)
         
 
-        let speedY:number = Math.sign(collRect.y - borderRect.y) * 3
-        let speedX:number = Math.sign(collRect.x - borderRect.x) * 3
+        let speedY:number = Math.sign(collRect.y - borderRect.y) * this.speed
+        let speedX:number = Math.sign(collRect.x - borderRect.x) * this.speed
 
  
         if(this.isCollide(collRect, borderRect) && (this.realY > (borderRect.y - 25)) && (this.realY < (borderRect.y + 25)) ){
             this.realX += speedX
-            bgLayer.x = bgLayer.x - speedX
-            objLayer.x = objLayer.x - speedX
+            bgLayer.x -= speedX
+            objLayer.x -= speedX
         
         }
 
