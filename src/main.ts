@@ -4,6 +4,7 @@ import Player from "./layers/Player";
 import ObjectGrid from "./layers/ObjectGrid";
 import ObjectLayer from "./layers/ObjectLayer";
 import Atlas from "./layers/Atlas";
+import Collision from "./layers/Collision";
 
 const canvas = document.getElementById('canvas') as HTMLCanvasElement;
 const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -23,6 +24,7 @@ atlasImg.onload = () => {
 
     const grid = new ObjectGrid()
     grid.addObject(2, 4, 4)
+    grid.addObject(2, 4, 3)
     grid.addObject(2, 24, 24)
     grid.addObject(2, 32, 32)
 
@@ -32,6 +34,18 @@ atlasImg.onload = () => {
 
 
     const player1 = new Player(ctx, 480-(32/2), 480-(32/2), mainAtlas, 3)
+
+    // crate array of collision blocks
+    let collisionBlocks:Array<Collision> = [
+        new Collision(4, 4, 32, 32),
+        new Collision(4, 3, 32, 32),
+        new Collision(12, 14, 32, 32)
+    ]
+
+    // loading collision blocks to player
+    collisionBlocks.forEach(collider => {
+        player1.loadColliders(collisionBlocks)
+    });
 
 
 // basic game loop
