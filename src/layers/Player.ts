@@ -72,33 +72,25 @@ export default class Player extends TextureLayer{
         })
     }
 
-    // for now only one object
-    private isCollide(a:any, b:any) {
-        return !(
-            ((a.y + a.height) < (b.y)) ||
-            (a.y > (b.y + b.height)) ||
-            ((a.x + a.width) < b.x) ||
-            (a.x > (b.x + b.width))
-        );
+
+    private isCollide(r1:any, r2:any){
+        if(r1.x >= r2.x + r2.width) return false
+        else if (r1.x + r1.width <= r2.x) return false
+        else if (r1.y >= r2.y + r2.height) return false
+        else if (r1.y + r1.height <= r2.y) return false
+        else return true
     }
 
     public updatePositionInLayers(bgLayer:BackgroundLayer, objLayer: ObjectLayer):void{
 
-        let horizontalRect = {
-            x: this.realX + this.speed,
+        let collRect = {
+            x: this.realX - this.speedX,
             y: this.realY,
-            width: this.blockSize,
+            width: this.blockSize + this.speedX,
             height: this.blockSize
         }
 
-        let verticalRect = {
-            x: this.realX,
-            y: this.realY + this.speed,
-            width: this.blockSize,
-            height: this.blockSize
-        }
-
-        let border = {
+        let borderRect = {
             x: 12*this.blockSize,
             y: 14*this.blockSize,
             width: 32,
@@ -106,64 +98,32 @@ export default class Player extends TextureLayer{
         }
 
         
-        if(this.mvUp) this.realY -= this.speed
-        if(this.mvDown) this.realY += this.speed
-        if(this.mvRight) this.realX += this.speed
-        if(this.mvLeft) this.realX -= this.speed
+        if(this.mvUp) this.realY -= this.speedY
+        if(this.mvDown) this.realY += this.speedY
+        if(this.mvRight) this.realX += this.speedX
+        if(this.mvLeft) this.realX -= this.speedX
         
         bgLayer.updatePosition(this.mvUp, this.mvDown, this.mvRight, this.mvLeft)
         objLayer.updatePosition(this.mvUp, this.mvDown, this.mvRight, this.mvLeft)
         
 
-        let speedY:number = Math.sign(horizontalRect.y - border.y) * 3
-        let speedX:number = Math.sign(horizontalRect.x - border.x) * 3
+        let speedY:number = Math.sign(collRect.y - borderRect.y) * 3
+        let speedX:number = Math.sign(collRect.x - borderRect.x) * 3
 
-        if(this.isCollide(verticalRect, border) && this.isCollide(horizontalRect, border)){
-            console.log(speedX, speedY)
-        
-            while(speedY > 0){
-                this.realY += 2 * speedY
-                bgLayer.y = bgLayer.y - 2 * speedY
-                objLayer.y = objLayer.y - 2 * speedY
-                speedY = 0
-            }
-
-            while(speedX > 0){
-                this.realX += 2 * speedX
-                bgLayer.x = bgLayer.x - 2 * speedX
-                objLayer.x = objLayer.x - 2* speedX
-                speedX = 0
-            }
-
-        }
-        else if(this.isCollide(verticalRect, border)){
-            
-            this.realY += speedY
-
-            console.log('vert ' + speedY, this.realX, this.realY)
-
-            bgLayer.y = bgLayer.y - speedY
-            objLayer.y = objLayer.y - speedY
-            // console.log('vert ')
-        }
-        else if(this.isCollide(horizontalRect, border)){
-            
+ 
+        if(this.isCollide(collRect, borderRect) && (this.realY > (borderRect.y - 25)) && (this.realY < (borderRect.y + 25)) ){
             this.realX += speedX
-            console.log('horiz ' + speedX, this.realX, this.realY)
             bgLayer.x = bgLayer.x - speedX
             objLayer.x = objLayer.x - speedX
         
         }
+
+        if(this.isCollide(collRect, borderRect) && ( (this.realY < (borderRect.y - 25 )) || (this.realY > (borderRect.y + 25)) ) ){
+            this.realY += speedY
+            bgLayer.y -= speedY
+            objLayer.y -= speedY
+        }
        
-
-
-        
-        
-
-        
-
-
-        // console.log(this.realX, this.realY)
     }
 
     public draw():void{

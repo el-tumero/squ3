@@ -26,15 +26,7 @@ atlasImg.onload = () => {
     grid.addObject(2, 24, 24)
     grid.addObject(2, 32, 32)
 
-    grid.addObject(2, 12, 14)
-
-
-    for (let i = 0; i < 6; i++) {
-        grid.addObject(2, 3, i)
-        grid.addObject(2, 4, i)
-        
-    }
-
+    grid.addObject(18, 12, 14)
 
     objLayer.loadObjects(grid)
 
