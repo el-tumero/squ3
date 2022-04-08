@@ -3,7 +3,6 @@ import BackgroundLayer from "./BackgroundLayer";
 import Collision from "./Collision";
 import ObjectLayer from "./ObjectLayer";
 import TextureLayer from "./TextureLayer";
-import PlayerSprite from "./PlayerSprite";
 
 export default class Player extends TextureLayer{
     x:number
