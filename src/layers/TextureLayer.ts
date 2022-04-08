@@ -5,7 +5,7 @@ export default class TextureLayer {
     canvas:HTMLCanvasElement
     ctx:CanvasRenderingContext2D
     domCtx:CanvasRenderingContext2D
-    textureAtlas:Atlas
+    
 
     blockSize:number = 32
 
@@ -14,12 +14,12 @@ export default class TextureLayer {
     y:number = 0
     
 
-    constructor(_domCtx: CanvasRenderingContext2D, _textureAtlas:Atlas) {
+    constructor(_domCtx: CanvasRenderingContext2D) {
        const [_ctx, _canvas] = this.createLayer();
        this.canvas = _canvas
        this.ctx = _ctx
        this.domCtx = _domCtx
-       this.textureAtlas = _textureAtlas
+
 
        this.canvas.width = 960
        this.canvas.height = 960

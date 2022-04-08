@@ -4,9 +4,11 @@ import Atlas from "./Atlas";
 
 export default class ObjectLayer extends TextureLayer {
 
+    textureAtlas:Atlas
 
     constructor(_domCtx: CanvasRenderingContext2D, _textureAtlas:Atlas) {
-        super(_domCtx, _textureAtlas)
+        super(_domCtx)
+        this.textureAtlas = _textureAtlas
         this.canvas.width = 1920
         this.canvas.height = 1920
     } 

@@ -4,9 +4,11 @@ import TextureLayer from "./TextureLayer";
 export default class BackgroundLayer extends TextureLayer{
 
     textureId:number
+    textureAtlas:Atlas
 
     constructor(_domCtx: CanvasRenderingContext2D, _textureAtlas:Atlas, _textureId:number){
-        super(_domCtx, _textureAtlas)
+        super(_domCtx)
+        this.textureAtlas = _textureAtlas
         this.canvas.width = 1920
         this.canvas.height = 1920
         this.textureId = _textureId
