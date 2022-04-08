@@ -5,7 +5,7 @@ import ObjectGrid from "./layers/ObjectGrid";
 import ObjectLayer from "./layers/ObjectLayer";
 import Atlas from "./layers/Atlas";
 import Collision from "./layers/Collision";
-import PlayerSprite from "./layers/PlayerSprite";
+import GameLoop from "./GameLoop";
 
 const canvas = document.getElementById('canvas') as HTMLCanvasElement;
 const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -63,8 +63,15 @@ atlasImg.onload = () => {
     });
 
 
+
+    const game = new GameLoop(60)
+
+    
 // basic game loop
 function update() {
+    // game.getFrames(frames => {
+
+    // })
     player1.updatePositionInLayers(backgroundLayer, objLayer, frames)
     // player1.animate(frames, 'up')
 }
@@ -76,45 +83,23 @@ function draw(_frames:number) {
     player1.draw(_frames)
 }
 
-let stop = false;
-let frameCount = 0;
-let fps:number 
-let elapsed:number
-let fpsInterval:number
-let frames:number = 0
-let now:number
-let then:number
-let startTime:number
 
-startAnimating(60);
 
-function framesUpdate() {
-    frames++;
-    if (frames == 60) frames = 0;
-}
+// gameloop = new GameLoop
 
-function startAnimating(fps:number) {
-    fpsInterval = 1000 / fps;
-    then = Date.now();
-    startTime = then;
-    animate();
-}
+//gameloop.startAnimating(60)
+// gameloop.draw(() => {
+// player1.draw()
+//})
 
-function animate() {
-    if (stop) {
-        return;
-    }
-    framesUpdate()
+// gameloop.update(frames => {
+// player1.animate(frames)
+//})
 
-    requestAnimationFrame(animate);
-    now = Date.now();
-    elapsed = now - then;
-    if (elapsed > fpsInterval) {
-        then = now - (elapsed % fpsInterval);
-        update();
-        draw(frames);
-    }
-}
+
+// startAnimating(60);
+
+
 
 
 }
