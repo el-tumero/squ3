@@ -3,15 +3,14 @@
     padding: 0;
 }
 #mainWrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    display: grid;
+    place-items: center;
     width: 100vw;
     height: 100vh;
     z-index: -1;
 }
 #mainCtn {
-    background-color:beige;
+    background-color:black;
     width: auto;
 }
 #rightCtn {
@@ -19,7 +18,7 @@
     height: 100%;
     right: 0;
     width: 10%;
-    border: 1px solid brown;
+    /* border: 1px solid brown; */
     
 }
 #leftCtn {
@@ -27,7 +26,7 @@
     height: 100%;
     left: 0;
     width: 10%;
-    border: 1px solid brown;
+    /* border: 1px solid brown; */
 }
 #canvasCtn {
     display: flex;
