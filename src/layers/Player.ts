@@ -17,6 +17,8 @@ export default class Player extends TextureLayer{
     speedX:number = 3
     speedY: number = 3;
     colliders:Array<Collision> = []
+    bgLayer:BackgroundLayer
+    objLayer:ObjectLayer
     
 
     spriteSize:number = 32
@@ -24,7 +26,7 @@ export default class Player extends TextureLayer{
     sx:number = 0
     sy:number = 0
 
-    constructor(_domCtx: CanvasRenderingContext2D, _x:number, _y:number){
+    constructor(_domCtx: CanvasRenderingContext2D, _x:number, _y:number, _bgLayer:BackgroundLayer, _objLayer:ObjectLayer){
         super(_domCtx)
         this.x = _x
         this.y = _y
@@ -34,8 +36,9 @@ export default class Player extends TextureLayer{
         this.mvDown = false
         this.mvRight = false
         this.mvLeft = false
-        // this.colliders = new Collision(12, 14, 32, 32)
         this.initControls()
+        this.bgLayer = _bgLayer
+        this.objLayer = _objLayer
     }
 
     private initControls():void{
@@ -87,7 +90,7 @@ export default class Player extends TextureLayer{
         this.sprite = _sprite
     }
 
-    public updatePositionInLayers(bgLayer:BackgroundLayer, objLayer: ObjectLayer, _frames: number):void{
+    public updatePositionInLayers(_frames: number):void{
 
 
 
@@ -116,19 +119,19 @@ export default class Player extends TextureLayer{
             this.animate(_frames, 'left')
         } 
         
-        bgLayer.updatePosition(this.mvUp, this.mvDown, this.mvRight, this.mvLeft)
-        objLayer.updatePosition(this.mvUp, this.mvDown, this.mvRight, this.mvLeft)
+        this.bgLayer.updatePosition(this.mvUp, this.mvDown, this.mvRight, this.mvLeft)
+        this.objLayer.updatePosition(this.mvUp, this.mvDown, this.mvRight, this.mvLeft)
 
         this.colliders.forEach(collider => {
-            collider.check(bgLayer, objLayer, this)
+            collider.check(this.bgLayer, this.objLayer, this)
         });
         
-        // this.colliders[0].check(bgLayer, objLayer, this)
 
        
     }
 
     private animate(_frames: number, _direction:String):void{
+        // console.log(_frames)
 
         if(_direction == "up"){
             this.sy = 3 * this.spriteSize
@@ -158,7 +161,7 @@ export default class Player extends TextureLayer{
     }
 
 
-    public draw(_frames: number):void{
+    public draw():void{
 
         this.domCtx.drawImage(this.sprite,
             this.sx,
