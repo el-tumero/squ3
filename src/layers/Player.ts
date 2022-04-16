@@ -1,6 +1,7 @@
 import Atlas from "./Atlas";
 import BackgroundLayer from "./BackgroundLayer";
 import Collision from "./Collision";
+import Interaction from "./Interaction";
 import ObjectLayer from "./ObjectLayer";
 import TextureLayer from "./TextureLayer";
 
@@ -9,6 +10,8 @@ export default class Player extends TextureLayer{
     y:number
     realX:number
     realY:number
+    centerX:number
+    centerY:number
     mvUp:boolean
     mvDown:boolean
     mvRight:boolean
@@ -19,6 +22,7 @@ export default class Player extends TextureLayer{
     colliders:Array<Collision> = []
     bgLayer:BackgroundLayer
     objLayer:ObjectLayer
+    interactions:Array<Interaction> = []
     
 
     spriteSize:number = 32
@@ -32,6 +36,8 @@ export default class Player extends TextureLayer{
         this.y = _y
         this.realX = _x
         this.realY = _y
+        this.centerX = this.realX+16
+        this.centerY = this.realY+16
         this.mvUp = false
         this.mvDown = false
         this.mvRight = false
@@ -39,6 +45,8 @@ export default class Player extends TextureLayer{
         this.initControls()
         this.bgLayer = _bgLayer
         this.objLayer = _objLayer
+
+        this.interactions.push(new Interaction(this, 6, 8));
     }
 
     private initControls():void{
@@ -104,23 +112,32 @@ export default class Player extends TextureLayer{
         
         if(this.mvUp){
             this.realY -= this.speedY
+            this.centerY = this.realY + 16
             this.animate(_frames, 'up')
         } 
         if(this.mvDown){
             this.realY += this.speedY
+            this.centerY = this.realY+16
             this.animate(_frames, 'down')
         } 
         if(this.mvRight){
             this.realX += this.speedX
+            this.centerX = this.realX+16
             this.animate(_frames, 'right')
         } 
         if(this.mvLeft){
+        
             this.realX -= this.speedX
+            this.centerX = this.realX+16
             this.animate(_frames, 'left')
         } 
         
         this.bgLayer.updatePosition(this.mvUp, this.mvDown, this.mvRight, this.mvLeft)
         this.objLayer.updatePosition(this.mvUp, this.mvDown, this.mvRight, this.mvLeft)
+        // sprawdzanie interakcji
+        
+        
+        this.interactions[0].check()
 
         this.colliders.forEach(collider => {
             collider.check(this.bgLayer, this.objLayer, this)

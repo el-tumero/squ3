@@ -38,6 +38,7 @@ export default class Map{
         this.addCollision(_collisions)
 
         this.localPlayer = this.createPlayer()
+        console.log(this.localPlayer.interactions[0])
         
     }
 
