@@ -11,6 +11,7 @@ export default class GameLoop{
     then:number = 0
     startTime:number = 0
     drawArr:Array<any> = []
+    updatePlayerArr:Array<any> = []
     updateArr:Array<any> = []
 
     ctx:CanvasRenderingContext2D
@@ -25,12 +26,25 @@ export default class GameLoop{
         this.drawArr = _thingsToDraw
     }// bardziej dodanie arraya do arraya bedzie lepsze
 
-    public addToUpdate(_thingsToUpdate:Array<any>){
+    public addToUpdatePlayer(_thingsToUpdate:Array<any>){
+        this.updatePlayerArr = _thingsToUpdate
+    }
+
+    public addToUpdate(_thingsToUpdate:Array<any>):void{
         this.updateArr = _thingsToUpdate
     }
 
+
+
+
     private update():void{
         this.updateArr.forEach(element => {
+            element.update(this.frames)
+        })
+    }
+
+    private updatePlayer():void{
+        this.updatePlayerArr.forEach(element => {
             element.updatePositionInLayers(this.frames)
         })
     }
@@ -42,8 +56,6 @@ export default class GameLoop{
             
         });
     }
-
-
 
 
     private framesUpdate(){
@@ -72,6 +84,7 @@ export default class GameLoop{
             this.then = this.now - (this.elapsed % this.fpsInterval);
             // this.loop()
             this.update();
+            this.updatePlayer();
             this.draw();
         }
     }

@@ -46,7 +46,7 @@ export default class Player extends TextureLayer{
         this.bgLayer = _bgLayer
         this.objLayer = _objLayer
 
-        this.interactions.push(new Interaction(this, 6, 8));
+        this.interactions.push(new Interaction(this, 6, 8, "1) Portal"));
     }
 
     private initControls():void{

@@ -47,7 +47,8 @@ atlasImg.onload = () => {
     const game = new GameLoop(60, ctx)
 
     game.addToDraw([map1.backgroundLayer, map1.objectLayer, map1.localPlayer, ui])
-    game.addToUpdate([map1.localPlayer])
+    game.addToUpdate([ui])
+    game.addToUpdatePlayer([map1.localPlayer])
 
     game.startAnimating(60)
 
