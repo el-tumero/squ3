@@ -1,0 +1,21 @@
+{
+    "objGrid": [
+        {"id": 2, "x": 4,"y": 4},
+        {"id": 2, "x": 4,"y": 3},
+        {"id": 3, "x": 6,"y": 8},
+        {"id": 2, "x": 24,"y": 24},
+        {"id": 2, "x": 32,"y": 32},
+        {"id": 18,"x": 12,"y": 14}
+    ],
+    "colliders": [
+        {"x": 4, "y": 4},
+        {"x": 4, "y": 3},
+        {"x": 12,"y": 14},
+        {"x": 6, "y": 8}
+    ],
+    "interactions": [
+        {"x": 6, "y": 8, "info": "portal2", "type":"portal"},
+        {"x": 12,"y":14, "info": "Catus", "type":"talk"}
+    ],
+    "backgroundLayerBlockId": 1
+}

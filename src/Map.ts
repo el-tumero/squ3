@@ -4,7 +4,7 @@ import BackgroundLayer from "./layers/BackgroundLayer"
 import ObjectLayer from "./layers/ObjectLayer"
 import Collision from "./layers/Collision"
 import Player from "./layers/Player"
-import TextureLayer from "./layers/TextureLayer"
+import Interaction from "./layers/Interaction"
 
 type MapObject = {
     id: number,
@@ -17,6 +17,13 @@ type ColliderObject = {
     y: number,
 }
 
+type InteractionObject = {
+    x:number,
+    y:number,
+    info:string,
+    type:string
+}
+
 export default class Map{
     id:number
     // atlas:Atlas
@@ -26,19 +33,22 @@ export default class Map{
     blockSize:number = 32
     localPlayer:Player
     collisions:Array<Collision> = []
+    interactions:Array<Interaction> = []
 
 
-    constructor(_ctx:CanvasRenderingContext2D, _id:number, _atlas:Atlas, _bgLayerBlockId:number, _objs:Array<MapObject>, _collisions:Array<ColliderObject>){
+    constructor(_ctx:CanvasRenderingContext2D, _id:number, _atlas:Atlas, _bgLayerBlockId:number, _objs:Array<MapObject>, _collisions:Array<ColliderObject>, _interactions:Array<InteractionObject>){
         this.ctx = _ctx
         this.id = _id
         
         this.backgroundLayer = new BackgroundLayer(_ctx, _atlas, _bgLayerBlockId)
         this.objectLayer = new ObjectLayer(_ctx, _atlas)
         this.objectLayer.loadObjects(this.createGrid(_objs))
-        this.addCollision(_collisions)
+        
 
         this.localPlayer = this.createPlayer()
-        console.log(this.localPlayer.interactions[0])
+        this.addCollision(_collisions)
+        this.addInteractions(_interactions)
+        //console.log(this.localPlayer.interactions[0])
         
     }
 
@@ -56,6 +66,12 @@ export default class Map{
         })
     }
 
+    private addInteractions(_interactions:Array<InteractionObject>):void{
+        _interactions.forEach(_intrBlock => {
+            this.interactions.push(new Interaction(this.localPlayer, _intrBlock.x, _intrBlock.y, _intrBlock.info, _intrBlock.type))
+        })
+    }
+
     private createPlayer():Player {
         const player1 = new Player(this.ctx, 480-(32/2), 480-(32/2), this.backgroundLayer, this.objectLayer)
 
@@ -67,6 +83,8 @@ export default class Map{
         }
 
         player1.loadColliders(this.collisions)
+
+        player1.loadInteractions(this.interactions)
 
         return player1
 

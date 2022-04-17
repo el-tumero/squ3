@@ -1,13 +1,9 @@
-import BackgroundLayer from "./layers/BackgroundLayer";
-import Player from "./layers/Player";
-import ObjectGrid from "./layers/ObjectGrid";
-import ObjectLayer from "./layers/ObjectLayer";
 import Atlas from "./layers/Atlas";
-import Collision from "./layers/Collision";
 import GameLoop from "./GameLoop";
 import Map from "./Map";
-import Interaction from "./layers/Interaction";
 import UI from "./layers/UI";
+import map1Data from "./mapsData/map1.json" // importuje dane mapy z pliku
+import map2Data from "./mapsData/map2.json"
 
 const canvas = document.getElementById('canvas') as HTMLCanvasElement;
 const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -18,33 +14,39 @@ const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 const atlasImg:HTMLImageElement = new Image();
 atlasImg.src = '../assets/graphics/atlas.png'
 
+const game = new GameLoop(60, ctx)
+let mainAtlas:Atlas;
+
+
+const mapsData:Array<any> = [map1Data, map2Data]
+
+
+document.addEventListener("changeMap", (e) => {
+    //console.log()
+
+    const id:number = (<any>e).detail.to as number
+    const mapData = mapsData[id -1]
+    //console.log("MAP CHANGE!")
+
+    const nMap = new Map(ctx, id, mainAtlas, mapData.backgroundLayerBlockId, mapData.objGrid, mapData.colliders, mapData.interactions)
+
+    const ui = new UI(ctx, nMap)
+
+    game.addToDraw([nMap.backgroundLayer, nMap.objectLayer, nMap.localPlayer, ui])
+    game.addToUpdate([ui])
+    game.addToUpdatePlayer([nMap.localPlayer])
+
+
+})
 
 
 atlasImg.onload = () => {
-    const mainAtlas = new Atlas(256, 256, atlasImg, 32)
+    mainAtlas = new Atlas(256, 256, atlasImg, 32)
 
-    const objGrid = [
-        {id: 2, x: 4,y: 4},
-        {id: 2, x: 4,y: 3},
-        {id: 3, x: 6,y: 8},
-        {id: 2, x: 24,y: 24},
-        {id: 2, x: 32,y: 32},
-        {id: 18, x: 12,y: 14},
-
-    ]
-
-    const colliders = [
-        {x: 4, y: 4},
-        {x: 4, y: 3},
-        {x: 12, y: 14},
-        {x: 6, y: 8},
-    ]
-
-    const map1 = new Map(ctx, 1, mainAtlas, 1, objGrid, colliders)
+    const map1 = new Map(ctx, 1, mainAtlas, map1Data.backgroundLayerBlockId, map1Data.objGrid, map1Data.colliders, map1Data.interactions)
 
     const ui = new UI(ctx, map1)
 
-    const game = new GameLoop(60, ctx)
 
     game.addToDraw([map1.backgroundLayer, map1.objectLayer, map1.localPlayer, ui])
     game.addToUpdate([ui])

@@ -45,8 +45,6 @@ export default class Player extends TextureLayer{
         this.initControls()
         this.bgLayer = _bgLayer
         this.objLayer = _objLayer
-
-        this.interactions.push(new Interaction(this, 6, 8, "1) Portal"));
     }
 
     private initControls():void{
@@ -94,6 +92,10 @@ export default class Player extends TextureLayer{
         this.colliders = _colliders
     }
 
+    public loadInteractions(_interactions:Array<Interaction>){
+        this.interactions = _interactions
+    }
+
     public loadSpritesheet(_sprite:HTMLImageElement){
         this.sprite = _sprite
     }
@@ -137,7 +139,11 @@ export default class Player extends TextureLayer{
         // sprawdzanie interakcji
         
         
-        this.interactions[0].check()
+        //this.interactions[0].check()
+
+        this.interactions.forEach(interaction => {
+            interaction.check()
+        })
 
         this.colliders.forEach(collider => {
             collider.check(this.bgLayer, this.objLayer, this)

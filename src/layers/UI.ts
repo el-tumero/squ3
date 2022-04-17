@@ -17,7 +17,7 @@ export default class UI extends TextureLayer {
     isActive:boolean = false
     panelTexture:HTMLImageElement = new Image()
     font:Letters
-    testTextArea:Textarea
+    hintTextarea:Textarea
 
     constructor(_domCtx: CanvasRenderingContext2D, _mapRef:Map){
         super(_domCtx)
@@ -30,7 +30,7 @@ export default class UI extends TextureLayer {
         this.initializeListeners()
 
         this.font = new Letters()
-        this.testTextArea = new Textarea(this.font, this.ctx, "kliknij_e")
+        this.hintTextarea = new Textarea(this.font, this.ctx, "")
         
     }
 
@@ -44,11 +44,20 @@ export default class UI extends TextureLayer {
         
     }
 
-    private initializeListeners(){
+    private initializeListeners():void{
         document.addEventListener("keydown", e => {
             if(e.key === "e"){
                 if(this.intrRef !== null && this.intrRef.isInRange && !this.isActive){
                     this.isActive = true
+                    if(this.intrRef.type === 'talk') console.log('Hi bro!')
+                    if(this.intrRef.info === 'portal1') {
+                        const mapChangeEvent:CustomEvent = new CustomEvent('changeMap', {detail: {to: 1} });
+                        document.dispatchEvent(mapChangeEvent)
+                    }
+                    if(this.intrRef.info === 'portal2'){
+                        const mapChangeEvent:CustomEvent = new CustomEvent('changeMap', {detail: {to: 2} });
+                        document.dispatchEvent(mapChangeEvent)
+                    }
                 }
             }
         })
@@ -60,6 +69,7 @@ export default class UI extends TextureLayer {
             if(interaction.isInRange){
                 this.intrRef = interaction
                 this.isDetected = true
+                this.hintTextarea.changeText(interaction.type)
             } 
         });
 
@@ -74,7 +84,7 @@ export default class UI extends TextureLayer {
     private drawHint():void{
         if(this.isDetected && !this.isActive){
             this.ctx.drawImage(this.panelTexture, 280, 800)//this.ctx.fillRect(480-200, 800, 400, 100)
-            this.testTextArea.showText(280, 800)
+            this.hintTextarea.showText(280, 800)
         } 
         if(this.isDetected && this.isActive) {
             this.ctx.clearRect(0,0 ,960, 960)

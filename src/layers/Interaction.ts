@@ -10,9 +10,10 @@ export default class Interaction {
     centerY:number
     blockSize:number = 32
     isInRange:boolean = false
-    info:String = ""
+    info:string
+    type:string
 
-    constructor(_player:Player,_x:number,_y:number, _info:String) {
+    constructor(_player:Player,_x:number,_y:number, _info:string, _type:string) {
 
         this.x = _x
         this.y = _y
@@ -21,6 +22,7 @@ export default class Interaction {
         this.centerX = _x*this.blockSize+16
         this.centerY = _y*this.blockSize+16
 
+        this.type = _type
         this.info = _info
 
     }
