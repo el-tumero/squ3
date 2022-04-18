@@ -35,19 +35,21 @@ export default class Map{
     collisions:Array<Collision> = []
     interactions:Array<Interaction> = []
 
-
-    constructor(_ctx:CanvasRenderingContext2D, _id:number, _atlas:Atlas, _bgLayerBlockId:number, _objs:Array<MapObject>, _collisions:Array<ColliderObject>, _interactions:Array<InteractionObject>){
+    constructor(_ctx:CanvasRenderingContext2D, _id:number, _atlas:Atlas, _bgLayerBlockId:number, _objs:Array<MapObject>, _collisions:Array<ColliderObject>, _interactions:Array<InteractionObject>,_objGrid:ObjectGrid){
         this.ctx = _ctx
         this.id = _id
         
         this.backgroundLayer = new BackgroundLayer(_ctx, _atlas, _bgLayerBlockId)
-        this.objectLayer = new ObjectLayer(_ctx, _atlas)
-        this.objectLayer.loadObjects(this.createGrid(_objs))
+        this.objectLayer = new ObjectLayer(_ctx, _atlas,_objGrid)
+        this.objectLayer.loadObjects()
+    
+        
         
 
         this.localPlayer = this.createPlayer()
         this.addCollision(_collisions)
         this.addInteractions(_interactions)
+        this.createGrid(_objs)
         //console.log(this.localPlayer.interactions[0])
         
     }

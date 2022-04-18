@@ -50,6 +50,12 @@ export default class UI extends TextureLayer {
                 if(this.intrRef !== null && this.intrRef.isInRange && !this.isActive){
                     this.isActive = true
                     if(this.intrRef.type === 'talk') console.log('Hi bro!')
+                    if (this.intrRef.type === 'open' )
+                    {
+                        console.log('open da door')
+                        const doorOpenEvent:CustomEvent = new CustomEvent('openDoor');
+                        document.dispatchEvent(doorOpenEvent)
+                    }
                     if(this.intrRef.info === 'portal1') {
                         const mapChangeEvent:CustomEvent = new CustomEvent('changeMap', {detail: {to: 1} });
                         document.dispatchEvent(mapChangeEvent)
@@ -88,7 +94,7 @@ export default class UI extends TextureLayer {
         } 
         if(this.isDetected && this.isActive) {
             this.ctx.clearRect(0,0 ,960, 960)
-            this.ctx.fillRect(320,320,100,100)
+            // this.ctx.fillRect(320,320,100,100)
         }
         if (!this.isDetected && !this.isActive ) this.ctx.clearRect(0,0,960,960)
     }
