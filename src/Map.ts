@@ -29,27 +29,36 @@ export default class Map{
     // atlas:Atlas
     ctx:CanvasRenderingContext2D
     backgroundLayer:BackgroundLayer
-    objectLayer:ObjectLayer
+    objectLayer:ObjectLayer;
     blockSize:number = 32
     localPlayer:Player
     collisions:Array<Collision> = []
     interactions:Array<Interaction> = []
 
-    constructor(_ctx:CanvasRenderingContext2D, _id:number, _atlas:Atlas, _bgLayerBlockId:number, _objs:Array<MapObject>, _collisions:Array<ColliderObject>, _interactions:Array<InteractionObject>,_objGrid:ObjectGrid){
+    constructor(_ctx:CanvasRenderingContext2D, _id:number, _atlas:Atlas, _bgLayerBlockId:number, _objs:Array<MapObject>, _collisions:Array<ColliderObject>, _interactions:Array<InteractionObject>){
+        //usuwam to z constructora _objGrid
         this.ctx = _ctx
         this.id = _id
         
         this.backgroundLayer = new BackgroundLayer(_ctx, _atlas, _bgLayerBlockId)
-        this.objectLayer = new ObjectLayer(_ctx, _atlas,_objGrid)
-        this.objectLayer.loadObjects()
+        //this.objectLayer = new ObjectLayer(_ctx, _atlas,_objGrid) <- to jest nie potrzebne zobacz ze masz funkcje createGrid, która tworzy ci siatkę
+        // obiektów które następnie wrzucasz najpierw do ObjectGrida a potem do ObjectLayera
+        
+        //this.objectLayer.loadObjects() to tez jeszcze nie tutaj
     
+        //bardziej tak trzeba zrobic:
         
+        this.objectLayer = new ObjectLayer(_ctx, _atlas, this.createGrid(_objs))
+
+        // tworze obiekt klasy ObjectLayer wrzucajac do niego context canvasu docelowego, zbior tekstur i ich koordynatow (atlas)
+        // oraz siatke na ktorej zapisane sa obiekty, argument _objs to pole objList z jsona danej mapy
         
+        this.objectLayer.loadObjects() // to jest funkcja ktora rysuje bloki obiektow na virtualnym canvasie
+
 
         this.localPlayer = this.createPlayer()
         this.addCollision(_collisions)
         this.addInteractions(_interactions)
-        this.createGrid(_objs)
         //console.log(this.localPlayer.interactions[0])
         
     }

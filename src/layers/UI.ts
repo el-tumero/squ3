@@ -53,7 +53,8 @@ export default class UI extends TextureLayer {
                     if (this.intrRef.type === 'open' )
                     {
                         console.log('open da door')
-                        const doorOpenEvent:CustomEvent = new CustomEvent('openDoor');
+                        // podaje x,y bloku drzwi do pola detail
+                        const doorOpenEvent:CustomEvent = new CustomEvent('openDoor', {detail: {x: this.intrRef.x, y:this.intrRef.y}});
                         document.dispatchEvent(doorOpenEvent)
                     }
                     if(this.intrRef.info === 'portal1') {

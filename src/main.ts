@@ -22,10 +22,7 @@ let mainAtlas:Atlas;
 
 const mapsData:Array<any> = [map1Data, map2Data]
 
-document.addEventListener("openDoor", (e) => {
-    console.log('door opened')
-    
-})
+// INFO: na razie działa tylko usuwanie obiektów z warstwy obiektowej, nie znika kolizja, to jest do dodanie i do pomyslenia
 
 document.addEventListener("changeMap", (e) => {
     //console.log()
@@ -34,8 +31,23 @@ document.addEventListener("changeMap", (e) => {
     const mapData = mapsData[id -1]
     //console.log("MAP CHANGE!")
 
-    const nMap = new Map(ctx, id, mainAtlas, mapData.backgroundLayerBlockId, mapData.objLayer, mapData.colliders, mapData.interactions,mapData.objGrid)
+    const nMap = new Map(ctx, id, mainAtlas, mapData.backgroundLayerBlockId, mapData.objList, mapData.colliders, mapData.interactions)
     // ^ objGrid byl dodany, a objLayer nie ?
+    // tak ma być bo ObjectLayer jest tworzony na postawie objGrid tam dalej więc 
+    // dobra wiem gdze jest błąd, ktory ci wszystko mieszal, mamy ObjectGrid jako klase i objGrid jako atrybut elemntu json
+    // zmienie jego nazwe na objList zeby sie nie mieszalo (robie zmiany w jsonie i w mainie)
+
+    document.addEventListener("openDoor", (e) => {
+        // dzieki arrow function na gorze i tutaj e w document.addEventlistener("openDoor") i e w document.addeventListner("changeMap") to inne e
+        // jesli to nie jasne to napisz
+        console.log('door opened')
+        const x:number = (<any>e).detail.x as number
+        const y:number = (<any>e).detail.y as number
+        //console.log()
+        // usuwanko
+        nMap.objectLayer.deleteObject(x, y)
+        
+    })
 
     const ui = new UI(ctx, nMap)
 
@@ -50,7 +62,7 @@ document.addEventListener("changeMap", (e) => {
 atlasImg.onload = () => {
     mainAtlas = new Atlas(256, 256, atlasImg, 32)
 
-    const map1 = new Map(ctx, 1, mainAtlas, map1Data.backgroundLayerBlockId, map1Data.objGrid, map1Data.colliders, map1Data.interactions)
+    const map1 = new Map(ctx, 1, mainAtlas, map1Data.backgroundLayerBlockId, map1Data.objList, map1Data.colliders, map1Data.interactions)
     // gdzie ma byc ten objGrid dodany i jak ? ? ? 
     const ui = new UI(ctx, map1)
 

@@ -14,6 +14,7 @@ export default class ObjectLayer extends TextureLayer {
         this.canvas.width = 1920
         this.canvas.height = 1920
     } 
+    //tutaj jest git o to własnie chodziło 
 
     public loadObjects(){
         for (let i = 0; i < this.canvas.width/this.blockSize; i++) {
@@ -32,6 +33,22 @@ export default class ObjectLayer extends TextureLayer {
                 }
             }
         }
+    }
+
+    // i teraz najlepsza część 
+
+    // tworze ta funckje jako publiczna zebym mogl sie odniesc do niej gdzies daleko stad a zasadzie to w klasie UI
+    // dzięki temu ze klasa UI ma odnosnik do obiektu klasy Map, a klasa Map posiada w sobie odnosnik do obiektu klasy
+    // ObjectLayer bedziemy mogli sie odniesc do tej metody, wiem data flow na poteznym poziomie
+    public deleteObject(_x:number, _y:number):void{
+        // najłatwiej będzie usuwać blok który chcemy, z grida i ponownie wczytywać plansze
+        
+        console.log(_x, _y)
+        this.objGrid.grid[_x][_y] = 0
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height) // wiadomo czyscimy nasz wirtualny canvasek
+        this.loadObjects()
+        // i to w zasadzie tyle
+
     }
 
     public draw():void {
