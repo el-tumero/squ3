@@ -9,9 +9,9 @@ export default class TextureLayer {
 
     blockSize:number = 32
 
-    speed:number = 3
-    x:number = 0
-    y:number = 0
+    protected speed:number = 3
+    protected x:number = 0
+    protected y:number = 0
     
 
     constructor(_domCtx: CanvasRenderingContext2D) {
@@ -24,6 +24,18 @@ export default class TextureLayer {
        this.canvas.width = 960
        this.canvas.height = 960
     
+    }
+
+    public getSpeed():number{
+        return this.speed
+    }
+
+    public colMoveX(_speedX:number){
+        this.x -= _speedX
+    }
+
+    public colMoveY(_speedY:number){
+        this.y -= _speedY
     }
 
     public updatePosition(_mvUp:boolean, _mvDown:boolean, _mvRight:boolean, _mvLeft:boolean):void{

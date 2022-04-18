@@ -6,8 +6,8 @@ import TextureLayer from "./TextureLayer";
 export default class Player extends TextureLayer{
     x:number
     y:number
-    realX:number
-    realY:number
+    private realX:number
+    private realY:number
     centerX:number
     centerY:number
     mvUp:boolean
@@ -45,6 +45,7 @@ export default class Player extends TextureLayer{
         this.interactions = _map.getInteractions()
         this.colliders = _map.getColliders()
     }
+
 
     private initControls():void{
         document.addEventListener('keydown', e=> {
@@ -95,13 +96,29 @@ export default class Player extends TextureLayer{
     //     this.interactions = _interactions
     // }
 
+    public getRealX():number {
+        return this.realX
+    }
+
+    public getRealY():number {
+        return this.realY
+    }
+
+    public override colMoveX(_speedX: number): void {
+        this.realX += _speedX
+    }
+
+    public override colMoveY(_speedY: number): void {
+        this.realY += _speedY
+    }
+
     public loadSpritesheet(_sprite:HTMLImageElement){
         this.sprite = _sprite
     }
 
     public updatePositionInLayers(_frames: number):void{
 
-
+        // console.log(_frames)
 
         // let borderRect = {
         //     x: 12*this.blockSize,
