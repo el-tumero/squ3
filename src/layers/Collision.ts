@@ -1,5 +1,6 @@
 import BackgroundLayer from "./BackgroundLayer"
 import ObjectLayer from "./ObjectLayer"
+import Map from "../Map"
 import Player from "./Player"
 
 type Rectangle = {
@@ -15,38 +16,40 @@ export default class Collision{
     border:Rectangle
     width:number
     height:number
+    map:Map
 
 
-    constructor(_blockX:number, _blockY:number, _width:number, _height:number){
+    constructor(_map:Map, _blockX:number, _blockY:number, _width:number, _height:number){
         this.border = {x: _blockX*this.blockSize, y: _blockY*this.blockSize, width: _width, height: _height}
         this.width = _width
         this.height = _height
+        this.map = _map
     }
 
-    public check(_bgLayer:BackgroundLayer, _objLayer:ObjectLayer, _player:Player){
+    public check(){
 
         let collRect = {
-            x: _player.realX - _player.speedX,
-            y: _player.realY,
-            width: this.blockSize + _player.speedX,
+            x: this.map.localPlayer.realX - this.map.localPlayer.speedX,
+            y: this.map.localPlayer.realY,
+            width: this.blockSize + this.map.localPlayer.speedX,
             height: this.blockSize,
         }
 
 
-        let speedY:number = Math.sign(collRect.y - this.border.y) * _player.speed
-        let speedX:number = Math.sign(collRect.x - this.border.x) * _player.speed
+        let speedY:number = Math.sign(collRect.y - this.border.y) * this.map.localPlayer.speed
+        let speedX:number = Math.sign(collRect.x - this.border.x) * this.map.localPlayer.speed
 
  
-        if(this.isCollide(collRect, this.border) && (_player.realY > (this.border.y - 25)) && (_player.realY < (this.border.y + 25)) ){
-            _player.realX += speedX
-            _bgLayer.x -= speedX
-            _objLayer.x -= speedX        
+        if(this.isCollide(collRect, this.border) && (this.map.localPlayer.realY > (this.border.y - 25)) && (this.map.localPlayer.realY < (this.border.y + 25)) ){
+            this.map.localPlayer.realX += speedX
+            this.map.backgroundLayer.x -= speedX
+            this.map.objectLayer.x -= speedX        
         }
 
-        if(this.isCollide(collRect, this.border) && ( (_player.realY < (this.border.y - 25 )) || (_player.realY > (this.border.y + 25)) ) ){
-            _player.realY += speedY
-            _bgLayer.y -= speedY
-            _objLayer.y -= speedY
+        if(this.isCollide(collRect, this.border) && ( (this.map.localPlayer.realY < (this.border.y - 25 )) || (this.map.localPlayer.realY > (this.border.y + 25)) ) ){
+            this.map.localPlayer.realY += speedY
+            this.map.backgroundLayer.y -= speedY
+            this.map.objectLayer.y -= speedY
         }
 
     }

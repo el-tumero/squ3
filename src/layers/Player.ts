@@ -1,8 +1,6 @@
-import Atlas from "./Atlas";
-import BackgroundLayer from "./BackgroundLayer";
+import Map from "../Map";
 import Collision from "./Collision";
 import Interaction from "./Interaction";
-import ObjectLayer from "./ObjectLayer";
 import TextureLayer from "./TextureLayer";
 
 export default class Player extends TextureLayer{
@@ -20,8 +18,7 @@ export default class Player extends TextureLayer{
     speedX:number = 3
     speedY: number = 3;
     colliders:Array<Collision> = []
-    bgLayer:BackgroundLayer
-    objLayer:ObjectLayer
+    map:Map
     interactions:Array<Interaction> = []
     
 
@@ -30,7 +27,7 @@ export default class Player extends TextureLayer{
     sx:number = 0
     sy:number = 0
 
-    constructor(_domCtx: CanvasRenderingContext2D, _x:number, _y:number, _bgLayer:BackgroundLayer, _objLayer:ObjectLayer){
+    constructor(_domCtx: CanvasRenderingContext2D, _x:number, _y:number, _map:Map){
         super(_domCtx)
         this.x = _x
         this.y = _y
@@ -43,8 +40,10 @@ export default class Player extends TextureLayer{
         this.mvRight = false
         this.mvLeft = false
         this.initControls()
-        this.bgLayer = _bgLayer
-        this.objLayer = _objLayer
+        this.map = _map
+
+        this.interactions = _map.getInteractions()
+        this.colliders = _map.getColliders()
     }
 
     private initControls():void{
@@ -88,13 +87,13 @@ export default class Player extends TextureLayer{
         })
     }
 
-    public loadColliders(_colliders:Array<Collision>){
-        this.colliders = _colliders
-    }
+    // public loadColliders(_colliders:Array<Collision>){
+    //     this.colliders = _colliders
+    // }
 
-    public loadInteractions(_interactions:Array<Interaction>){
-        this.interactions = _interactions
-    }
+    // public loadInteractions(_interactions:Array<Interaction>){
+    //     this.interactions = _interactions
+    // }
 
     public loadSpritesheet(_sprite:HTMLImageElement){
         this.sprite = _sprite
@@ -134,19 +133,18 @@ export default class Player extends TextureLayer{
             this.animate(_frames, 'left')
         } 
         
-        this.bgLayer.updatePosition(this.mvUp, this.mvDown, this.mvRight, this.mvLeft)
-        this.objLayer.updatePosition(this.mvUp, this.mvDown, this.mvRight, this.mvLeft)
-        // sprawdzanie interakcji
+        // aktualizowanie pozycji warstw
+        this.map.updateLayersPosition(this.mvUp, this.mvDown, this.mvRight, this.mvLeft)
         
         
-        //this.interactions[0].check()
-
+        // sprawdzanie interakcji oraz kolizji
+        
         this.interactions.forEach(interaction => {
             interaction.check()
         })
 
         this.colliders.forEach(collider => {
-            collider.check(this.bgLayer, this.objLayer, this)
+            collider.check()
         });
         
 

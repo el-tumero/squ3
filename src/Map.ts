@@ -25,15 +25,15 @@ type InteractionObject = {
 }
 
 export default class Map{
-    id:number
+    public id:number
     // atlas:Atlas
-    ctx:CanvasRenderingContext2D
-    backgroundLayer:BackgroundLayer
-    objectLayer:ObjectLayer;
-    blockSize:number = 32
-    localPlayer:Player
-    collisions:Array<Collision> = []
-    interactions:Array<Interaction> = []
+    private ctx:CanvasRenderingContext2D
+    public backgroundLayer:BackgroundLayer
+    public objectLayer:ObjectLayer;
+    private blockSize:number = 32
+    public localPlayer:Player
+    private collisions:Array<Collision> = []
+    private interactions:Array<Interaction> = []
 
     constructor(_ctx:CanvasRenderingContext2D, _id:number, _atlas:Atlas, _bgLayerBlockId:number, _objs:Array<MapObject>, _collisions:Array<ColliderObject>, _interactions:Array<InteractionObject>){
         //usuwam to z constructora _objGrid
@@ -53,7 +53,7 @@ export default class Map{
         // tworze obiekt klasy ObjectLayer wrzucajac do niego context canvasu docelowego, zbior tekstur i ich koordynatow (atlas)
         // oraz siatke na ktorej zapisane sa obiekty, argument _objs to pole objList z jsona danej mapy
         
-        this.objectLayer.loadObjects() // to jest funkcja ktora rysuje bloki obiektow na virtualnym canvasie
+        this.objectLayer.loadObjects() // to jest funkcja ktora rysuje bloki obiektow na virtualnym canvasie =
 
 
         this.localPlayer = this.createPlayer()
@@ -73,7 +73,7 @@ export default class Map{
 
     private addCollision(_collisions:Array<ColliderObject>):void{
         _collisions.forEach(_collBlock => {
-            this.collisions.push(new Collision(_collBlock.x, _collBlock.y, this.blockSize, this.blockSize))
+            this.collisions.push(new Collision(this, _collBlock.x, _collBlock.y, this.blockSize, this.blockSize))
         })
     }
 
@@ -84,7 +84,7 @@ export default class Map{
     }
 
     private createPlayer():Player {
-        const player1 = new Player(this.ctx, 480-(32/2), 480-(32/2), this.backgroundLayer, this.objectLayer)
+        const player1 = new Player(this.ctx, 480-(32/2), 480-(32/2), this)
 
         const playerImg:HTMLImageElement = new Image();
         playerImg.src = '../assets/graphics/spritesheets/player_spritesheet.png'    
@@ -93,12 +93,26 @@ export default class Map{
             player1.loadSpritesheet(playerImg)
         }
 
-        player1.loadColliders(this.collisions)
+        // player1.loadColliders(this.collisions)
 
-        player1.loadInteractions(this.interactions)
+        // player1.loadInteractions(this.interactions)
 
         return player1
 
+    }
+
+
+    public updateLayersPosition(mvUp:boolean, mvDown:boolean, mvRight:boolean, mvLeft:boolean):void{
+        this.backgroundLayer.updatePosition(mvUp, mvDown, mvRight, mvLeft)
+        this.objectLayer.updatePosition(mvUp, mvDown, mvRight, mvLeft)
+    }
+
+    public getColliders():Array<Collision>{
+        return this.collisions
+    }
+
+    public getInteractions():Array<Interaction>{
+        return this.interactions
     }
 
 
