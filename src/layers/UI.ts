@@ -57,12 +57,18 @@ export default class UI extends TextureLayer {
                         const doorOpenEvent:CustomEvent = new CustomEvent('openDoor', {detail: {x: this.intrRef.x, y:this.intrRef.y}});
                         document.dispatchEvent(doorOpenEvent)
                     }
-                    if(this.intrRef.info === 'portal1') {
-                        const mapChangeEvent:CustomEvent = new CustomEvent('changeMap', {detail: {to: 1} });
-                        document.dispatchEvent(mapChangeEvent)
-                    }
-                    if(this.intrRef.info === 'portal2'){
-                        const mapChangeEvent:CustomEvent = new CustomEvent('changeMap', {detail: {to: 2} });
+                    // if(this.intrRef.info === 'portal1') {
+                    //     const mapChangeEvent:CustomEvent = new CustomEvent('changeMap', {detail: {to: 1} });
+                    //     document.dispatchEvent(mapChangeEvent)
+                    // }
+                    // if(this.intrRef.info === 'portal2'){
+                    //     const mapChangeEvent:CustomEvent = new CustomEvent('changeMap', {detail: {to: 2} });
+                    //     document.dispatchEvent(mapChangeEvent)
+                    // }
+                    
+                    if(this.intrRef.info.includes("portal")){
+                        let mapId:number = Number(this.intrRef.info[6])
+                        const mapChangeEvent:CustomEvent = new CustomEvent('changeMap', {detail: {to: mapId} });
                         document.dispatchEvent(mapChangeEvent)
                     }
                 }

@@ -4,6 +4,7 @@ import Map from "./Map";
 import UI from "./layers/UI";
 import map1Data from "./mapsData/map1.json" // importuje dane mapy z pliku
 import map2Data from "./mapsData/map2.json"
+import map3Data from "./mapsData/map3.json"
 import ObjectGrid from "./layers/ObjectGrid";
 
 const canvas = document.getElementById('canvas') as HTMLCanvasElement;
@@ -20,7 +21,7 @@ const game = new GameLoop(60, ctx)
 let mainAtlas:Atlas;
 
 
-const mapsData:Array<any> = [map1Data, map2Data]
+const mapsData:Array<any> = [map1Data, map2Data, map3Data]
 
 // INFO: na razie działa tylko usuwanie obiektów z warstwy obiektowej, nie znika kolizja, to jest do dodanie i do pomyslenia
 
