@@ -2,16 +2,16 @@ import Player from "./Player"
 
 export default class Interaction {
 
-    player:Player
-    radiusValue:number = 0
-    x:number
-    y:number
-    centerX:number
-    centerY:number
-    blockSize:number = 32
-    isInRange:boolean = false
-    info:string
-    type:string
+    private player:Player
+    private radiusValue:number = 0
+    private x:number
+    private y:number
+    private centerX:number
+    private centerY:number
+    private blockSize:number = 32
+    private isNear:boolean = false
+    private info:string
+    private type:string
 
     constructor(_player:Player,_x:number,_y:number, _info:string, _type:string) {
 
@@ -40,11 +40,29 @@ export default class Interaction {
         let radius:number = this.radius(this.player.centerX, this.player.centerY, this.centerX, this.centerY)
 
         if( radius <= 64){
-           this.isInRange = true
+           this.isNear = true
            return
         }
-        this.isInRange = false
+        this.isNear = false
     }
 
+    public getType():string{ 
+        return this.type
+    }
 
+    public getInfo():string{
+        return this.info
+    }
+
+    public isInRange():boolean{
+        return this.isNear
+    }
+
+    public getX():number{
+        return this.x
+    }
+    
+    public getY():number {
+        return this.y
+    }
 }

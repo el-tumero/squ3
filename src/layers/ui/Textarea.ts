@@ -60,12 +60,6 @@ export default class Textarea{
             space += 34
         }
 
-        // to correct
-        // this.sprite.onload = () => {
-        //     //console.log(this.text)
-            
-        //     //space = 0;
-        // }
         
     }
 

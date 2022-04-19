@@ -24,36 +24,27 @@ type InteractionObject = {
     type:string
 }
 
+
 export default class Map{
-    public id:number
-    // atlas:Atlas
+    private id:number
     private ctx:CanvasRenderingContext2D
-    public backgroundLayer:BackgroundLayer
-    public objectLayer:ObjectLayer;
+    private backgroundLayer:BackgroundLayer
+    private objectLayer:ObjectLayer;
     private blockSize:number = 32
-    public localPlayer:Player
+    private localPlayer:Player
     private collisions:Array<Collision> = []
     private interactions:Array<Interaction> = []
 
     constructor(_ctx:CanvasRenderingContext2D, _id:number, _atlas:Atlas, _bgLayerBlockId:number, _objs:Array<MapObject>, _collisions:Array<ColliderObject>, _interactions:Array<InteractionObject>){
-        //usuwam to z constructora _objGrid
         this.ctx = _ctx
         this.id = _id
         
         this.backgroundLayer = new BackgroundLayer(_ctx, _atlas, _bgLayerBlockId)
-        //this.objectLayer = new ObjectLayer(_ctx, _atlas,_objGrid) <- to jest nie potrzebne zobacz ze masz funkcje createGrid, która tworzy ci siatkę
-        // obiektów które następnie wrzucasz najpierw do ObjectGrida a potem do ObjectLayera
-        
-        //this.objectLayer.loadObjects() to tez jeszcze nie tutaj
-    
-        //bardziej tak trzeba zrobic:
+
         
         this.objectLayer = new ObjectLayer(_ctx, _atlas, this.createGrid(_objs))
 
-        // tworze obiekt klasy ObjectLayer wrzucajac do niego context canvasu docelowego, zbior tekstur i ich koordynatow (atlas)
-        // oraz siatke na ktorej zapisane sa obiekty, argument _objs to pole objList z jsona danej mapy
-        
-        this.objectLayer.loadObjects() // to jest funkcja ktora rysuje bloki obiektow na virtualnym canvasie =
+        this.objectLayer.loadObjects()
 
 
         this.localPlayer = this.createPlayer()
@@ -93,10 +84,6 @@ export default class Map{
             player1.loadSpritesheet(playerImg)
         }
 
-        // player1.loadColliders(this.collisions)
-
-        // player1.loadInteractions(this.interactions)
-
         return player1
 
     }
@@ -115,6 +102,34 @@ export default class Map{
         return this.interactions
     }
 
+    public draw(){
+        this.backgroundLayer.draw()
+        this.objectLayer.draw()
+        this.localPlayer.draw()
+    }
+
+    public colMoveX(_speedX:number){
+        this.localPlayer.colMoveX(_speedX)
+        this.backgroundLayer.colMoveX(_speedX)
+        this.objectLayer.colMoveX(_speedX)    
+    }
+
+    public colMoveY(_speedY:number){
+        this.localPlayer.colMoveY(_speedY)
+        this.backgroundLayer.colMoveY(_speedY)
+        this.objectLayer.colMoveY(_speedY)    
+    }
+    public deleteObject(_x:number,_y:number){
+        this.objectLayer.deleteObject(_x,_y)
+    }
+
+    public getId():number{
+        return this.id
+    }
+
+    public getLocalPlayer():Player{
+        return this.localPlayer
+    }
 
 
 }

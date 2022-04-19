@@ -24,8 +24,8 @@ export default class Collision{
         this.width = _width
         this.height = _height
         this.map = _map
-        this.player = _map.localPlayer
-        this.playerSpeed = _map.localPlayer.getSpeed()
+        this.player = _map.getLocalPlayer()
+        this.playerSpeed = _map.getLocalPlayer().getSpeed()
     }
 
     public check(){
@@ -45,15 +45,11 @@ export default class Collision{
 
  
         if(this.isCollide(collRect, this.border) && (playerRealY > (this.border.y - 25)) && (playerRealY < (this.border.y + 25)) ){
-            this.player.colMoveX(speedX)
-            this.map.backgroundLayer.colMoveX(speedX)
-            this.map.objectLayer.colMoveX(speedX)    
+            this.map.colMoveX(speedX)
         }
 
         if(this.isCollide(collRect, this.border) && ( (playerRealY< (this.border.y - 25 )) || (playerRealY > (this.border.y + 25)) ) ){
-            this.player.colMoveY(speedY)
-            this.map.backgroundLayer.colMoveY(speedY)
-            this.map.objectLayer.colMoveY(speedY)  
+            this.map.colMoveY(speedY)
         }
 
     }

@@ -1,13 +1,11 @@
-import Atlas from "./Atlas"
-
 export default class TextureLayer {
     
-    canvas:HTMLCanvasElement
-    ctx:CanvasRenderingContext2D
-    domCtx:CanvasRenderingContext2D
+    protected canvas:HTMLCanvasElement
+    protected ctx:CanvasRenderingContext2D
+    protected domCtx:CanvasRenderingContext2D
     
 
-    blockSize:number = 32
+    protected blockSize:number = 32
 
     protected speed:number = 3
     protected x:number = 0

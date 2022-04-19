@@ -11,13 +11,13 @@ type UITextureSet = {
 
 export default class UI extends TextureLayer {
 
-    mapRef:Map
-    intrRef:Interaction | null = null
-    isDetected:boolean = false
-    isActive:boolean = false
-    panelTexture:HTMLImageElement = new Image()
-    font:Letters
-    hintTextarea:Textarea
+    private mapRef:Map
+    private intrRef:Interaction | null = null
+    private isDetected:boolean = false
+    private isActive:boolean = false
+    private panelTexture:HTMLImageElement = new Image()
+    private font:Letters
+    private hintTextarea:Textarea
 
     constructor(_domCtx: CanvasRenderingContext2D, _mapRef:Map){
         super(_domCtx)
@@ -47,27 +47,20 @@ export default class UI extends TextureLayer {
     private initializeListeners():void{
         document.addEventListener("keydown", e => {
             if(e.key === "e"){
-                if(this.intrRef !== null && this.intrRef.isInRange && !this.isActive){
+                if(this.intrRef !== null && this.intrRef.isInRange() && !this.isActive){
                     this.isActive = true
-                    if(this.intrRef.type === 'talk') console.log('Hi bro!')
-                    if (this.intrRef.type === 'open' )
+                    if(this.intrRef.getType() === 'talk') console.log('Hi bro!')
+                    if (this.intrRef.getType() === 'open' )
                     {
                         console.log('open da door')
-                        // podaje x,y bloku drzwi do pola detail
-                        const doorOpenEvent:CustomEvent = new CustomEvent('openDoor', {detail: {x: this.intrRef.x, y:this.intrRef.y}});
+                        
+                        
+                        const doorOpenEvent:CustomEvent = new CustomEvent('openDoor', {detail: {x: this.intrRef.getX(), y:this.intrRef.getY()}});
                         document.dispatchEvent(doorOpenEvent)
                     }
-                    // if(this.intrRef.info === 'portal1') {
-                    //     const mapChangeEvent:CustomEvent = new CustomEvent('changeMap', {detail: {to: 1} });
-                    //     document.dispatchEvent(mapChangeEvent)
-                    // }
-                    // if(this.intrRef.info === 'portal2'){
-                    //     const mapChangeEvent:CustomEvent = new CustomEvent('changeMap', {detail: {to: 2} });
-                    //     document.dispatchEvent(mapChangeEvent)
-                    // }
                     
-                    if(this.intrRef.info.includes("portal")){
-                        let mapId:number = Number(this.intrRef.info[6])
+                    if(this.intrRef.getInfo().includes("portal")){
+                        let mapId:number = Number(this.intrRef.getInfo()[6])
                         const mapChangeEvent:CustomEvent = new CustomEvent('changeMap', {detail: {to: mapId} });
                         document.dispatchEvent(mapChangeEvent)
                     }
@@ -77,16 +70,16 @@ export default class UI extends TextureLayer {
     }
 
     private detectInteraction():void{
-
-        this.mapRef.localPlayer.interactions.forEach(interaction => {
-            if(interaction.isInRange){
+        
+        this.mapRef.getLocalPlayer().getInteractions().forEach(interaction => {
+            if(interaction.isInRange()){
                 this.intrRef = interaction
                 this.isDetected = true
-                this.hintTextarea.changeText(interaction.type)
-            } 
+                this.hintTextarea.changeText(interaction.getType())
+            }
         });
 
-        if(this.intrRef !== null && !this.intrRef.isInRange){
+        if(this.intrRef !== null && !this.intrRef.isInRange()){
             this.isDetected = false
             this.isActive = false
         }
@@ -106,9 +99,6 @@ export default class UI extends TextureLayer {
         if (!this.isDetected && !this.isActive ) this.ctx.clearRect(0,0,960,960)
     }
 
-    // private drawInteraction():void{
-    //     if(this.isActive) this.ctx.fillRect(100, 100, 0, 0)
-    // }
 
     public update(): void {
         this.detectInteraction()

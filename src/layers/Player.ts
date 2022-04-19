@@ -169,7 +169,6 @@ export default class Player extends TextureLayer{
     }
 
     private animate(_frames: number, _direction:String):void{
-        // console.log(_frames)
 
         if(_direction == "up"){
             this.sy = 3 * this.spriteSize
@@ -213,5 +212,9 @@ export default class Player extends TextureLayer{
 
     }
 
+
+    public getInteractions():Array<Interaction>{
+        return this.interactions
+    }
 
 }
