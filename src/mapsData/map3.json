@@ -1,0 +1,14 @@
+{
+    "objList": [
+        {"id": 18, "x": 5,"y": 5}
+    ],
+    "colliders": [
+
+    ],
+    "interactions": [
+        {"x": 5, "y": 5, "info": "portal1", "type":"portal"}
+
+
+    ],
+    "backgroundLayerBlockId": 1
+}

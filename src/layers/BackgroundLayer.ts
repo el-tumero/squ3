@@ -3,8 +3,8 @@ import TextureLayer from "./TextureLayer";
 
 export default class BackgroundLayer extends TextureLayer{
 
-    textureId:number
-    textureAtlas:Atlas
+    private textureId:number
+    private textureAtlas:Atlas
 
     constructor(_domCtx: CanvasRenderingContext2D, _textureAtlas:Atlas, _textureId:number){
         super(_domCtx)

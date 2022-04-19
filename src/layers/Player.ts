@@ -1,14 +1,15 @@
-import Atlas from "./Atlas";
-import BackgroundLayer from "./BackgroundLayer";
+import Map from "../Map";
 import Collision from "./Collision";
-import ObjectLayer from "./ObjectLayer";
+import Interaction from "./Interaction";
 import TextureLayer from "./TextureLayer";
 
 export default class Player extends TextureLayer{
     x:number
     y:number
-    realX:number
-    realY:number
+    private realX:number
+    private realY:number
+    centerX:number
+    centerY:number
     mvUp:boolean
     mvDown:boolean
     mvRight:boolean
@@ -17,8 +18,8 @@ export default class Player extends TextureLayer{
     speedX:number = 3
     speedY: number = 3;
     colliders:Array<Collision> = []
-    bgLayer:BackgroundLayer
-    objLayer:ObjectLayer
+    map:Map
+    interactions:Array<Interaction> = []
     
 
     spriteSize:number = 32
@@ -26,20 +27,25 @@ export default class Player extends TextureLayer{
     sx:number = 0
     sy:number = 0
 
-    constructor(_domCtx: CanvasRenderingContext2D, _x:number, _y:number, _bgLayer:BackgroundLayer, _objLayer:ObjectLayer){
+    constructor(_domCtx: CanvasRenderingContext2D, _x:number, _y:number, _map:Map){
         super(_domCtx)
         this.x = _x
         this.y = _y
         this.realX = _x
         this.realY = _y
+        this.centerX = this.realX+16
+        this.centerY = this.realY+16
         this.mvUp = false
         this.mvDown = false
         this.mvRight = false
         this.mvLeft = false
         this.initControls()
-        this.bgLayer = _bgLayer
-        this.objLayer = _objLayer
+        this.map = _map
+
+        this.interactions = _map.getInteractions()
+        this.colliders = _map.getColliders()
     }
+
 
     private initControls():void{
         document.addEventListener('keydown', e=> {
@@ -82,8 +88,28 @@ export default class Player extends TextureLayer{
         })
     }
 
-    public loadColliders(_colliders:Array<Collision>){
-        this.colliders = _colliders
+    // public loadColliders(_colliders:Array<Collision>){
+    //     this.colliders = _colliders
+    // }
+
+    // public loadInteractions(_interactions:Array<Interaction>){
+    //     this.interactions = _interactions
+    // }
+
+    public getRealX():number {
+        return this.realX
+    }
+
+    public getRealY():number {
+        return this.realY
+    }
+
+    public override colMoveX(_speedX: number): void {
+        this.realX += _speedX
+    }
+
+    public override colMoveY(_speedY: number): void {
+        this.realY += _speedY
     }
 
     public loadSpritesheet(_sprite:HTMLImageElement){
@@ -92,7 +118,7 @@ export default class Player extends TextureLayer{
 
     public updatePositionInLayers(_frames: number):void{
 
-
+        // console.log(_frames)
 
         // let borderRect = {
         //     x: 12*this.blockSize,
@@ -104,26 +130,38 @@ export default class Player extends TextureLayer{
         
         if(this.mvUp){
             this.realY -= this.speedY
+            this.centerY = this.realY + 16
             this.animate(_frames, 'up')
         } 
         if(this.mvDown){
             this.realY += this.speedY
+            this.centerY = this.realY+16
             this.animate(_frames, 'down')
         } 
         if(this.mvRight){
             this.realX += this.speedX
+            this.centerX = this.realX+16
             this.animate(_frames, 'right')
         } 
         if(this.mvLeft){
+        
             this.realX -= this.speedX
+            this.centerX = this.realX+16
             this.animate(_frames, 'left')
         } 
         
-        this.bgLayer.updatePosition(this.mvUp, this.mvDown, this.mvRight, this.mvLeft)
-        this.objLayer.updatePosition(this.mvUp, this.mvDown, this.mvRight, this.mvLeft)
+        // aktualizowanie pozycji warstw
+        this.map.updateLayersPosition(this.mvUp, this.mvDown, this.mvRight, this.mvLeft)
+        
+        
+        // sprawdzanie interakcji oraz kolizji
+        
+        this.interactions.forEach(interaction => {
+            interaction.check()
+        })
 
         this.colliders.forEach(collider => {
-            collider.check(this.bgLayer, this.objLayer, this)
+            collider.check()
         });
         
 
@@ -131,7 +169,6 @@ export default class Player extends TextureLayer{
     }
 
     private animate(_frames: number, _direction:String):void{
-        // console.log(_frames)
 
         if(_direction == "up"){
             this.sy = 3 * this.spriteSize
@@ -175,5 +212,9 @@ export default class Player extends TextureLayer{
 
     }
 
+
+    public getInteractions():Array<Interaction>{
+        return this.interactions
+    }
 
 }
