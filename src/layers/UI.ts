@@ -47,7 +47,7 @@ export default class UI extends TextureLayer {
     private initializeListeners():void{
         document.addEventListener("keydown", e => {
             if(e.key === "e"){
-                if(this.intrRef !== null && this.intrRef.isInRange() && !this.isActive){
+                if(this.intrRef !== null && this.intrRef.isInRange() && !this.isActive ){
                     this.isActive = true
                     if(this.intrRef.getType() === 'talk') console.log('Hi bro!')
                     if (this.intrRef.getType() === 'open' )
@@ -89,13 +89,13 @@ export default class UI extends TextureLayer {
 
     private drawHint():void{
         if(this.isDetected && !this.isActive){
-            this.ctx.drawImage(this.panelTexture, 80, 400)//this.ctx.fillRect(480-200, 800, 400, 100)
-            this.hintTextarea.showText(80, 400)
+            this.ctx.drawImage(this.panelTexture, 80, 500)//this.ctx.fillRect(480-200, 800, 400, 100)
+            this.hintTextarea.showText(80, 500)
         } 
         if(this.isDetected && this.isActive) {
-            this.ctx.clearRect(0,0 ,960, 960)
+            //this.ctx.clearRect(0,0 ,960, 960)
             // interakcja - panel z tekstem >
-            this.ctx.fillRect(175,450,200,80)
+            // this.ctx.fillRect(175,450,200,80)
         }
         if (!this.isDetected && !this.isActive ) this.ctx.clearRect(0,0,960,960)
     }

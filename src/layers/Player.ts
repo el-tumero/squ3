@@ -29,10 +29,10 @@ export default class Player extends TextureLayer{
 
     constructor(_domCtx: CanvasRenderingContext2D, _x:number, _y:number, _map:Map){
         super(_domCtx)
-        this.x = _x/1.75
-        this.y = _y/1.75
-        this.realX = _x/1.75
-        this.realY = _y/1.75
+        this.x = _x/1.5
+        this.y = _y/1.5
+        this.realX = _x/1.5
+        this.realY = _y/1.5
         this.centerX = this.realX+16
         this.centerY = this.realY+16
         this.mvUp = false
@@ -152,6 +152,23 @@ export default class Player extends TextureLayer{
         
         // aktualizowanie pozycji warstw
         this.map.updateLayersPosition(this.mvUp, this.mvDown, this.mvRight, this.mvLeft)
+
+        if(this.realX < 0){
+            this.realX += this.speed
+            this.map.updateLayersPosition(false, false, true, false)
+        }
+        if(this.realX > 960*2 - this.blockSize){
+            this.realX -= this.speed
+            this.map.updateLayersPosition(false, false, false, true)
+        }
+        if(this.realY < 0){
+            this.realY += this.speed
+            this.map.updateLayersPosition(false, true, false, false)
+        }
+        if(this.realY > 960*2 - this.blockSize){
+            this.realY -= this.speed
+            this.map.updateLayersPosition(true, false, false, false)
+        }
         
         
         // sprawdzanie interakcji oraz kolizji

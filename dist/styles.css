@@ -36,5 +36,9 @@
 #canvas {
     /* margin-top: 1vh; */
     border: 1px solid black;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -webkit-crisp-edges;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
 }
 
