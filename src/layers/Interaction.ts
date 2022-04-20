@@ -41,7 +41,7 @@ export default class Interaction {
 
         if( radius <= 64){
            this.isNear = true
-           return
+           return 
         }
         this.isNear = false
     }

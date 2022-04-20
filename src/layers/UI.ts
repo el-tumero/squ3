@@ -89,12 +89,13 @@ export default class UI extends TextureLayer {
 
     private drawHint():void{
         if(this.isDetected && !this.isActive){
-            this.ctx.drawImage(this.panelTexture, 280, 800)//this.ctx.fillRect(480-200, 800, 400, 100)
-            this.hintTextarea.showText(280, 800)
+            this.ctx.drawImage(this.panelTexture, 80, 400)//this.ctx.fillRect(480-200, 800, 400, 100)
+            this.hintTextarea.showText(80, 400)
         } 
         if(this.isDetected && this.isActive) {
             this.ctx.clearRect(0,0 ,960, 960)
-            // this.ctx.fillRect(320,320,100,100)
+            // interakcja - panel z tekstem >
+            this.ctx.fillRect(175,450,200,80)
         }
         if (!this.isDetected && !this.isActive ) this.ctx.clearRect(0,0,960,960)
     }

@@ -9,8 +9,8 @@ import map3Data from "./mapsData/map3.json"
 
 const canvas = document.getElementById('canvas') as HTMLCanvasElement;
 const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
-// ctx.scale(1.75,1.75)
-
+// transform(a, b, c, d, e, f)
+ctx.scale(1.75,1.75)
 // canvas 960x960
 
 // loading texture atlas

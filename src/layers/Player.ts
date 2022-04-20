@@ -16,7 +16,7 @@ export default class Player extends TextureLayer{
     mvLeft:boolean
     facing:String = 'none'
     speedX:number = 3
-    speedY: number = 3;
+    speedY: number = 3
     colliders:Array<Collision> = []
     map:Map
     interactions:Array<Interaction> = []
@@ -29,10 +29,10 @@ export default class Player extends TextureLayer{
 
     constructor(_domCtx: CanvasRenderingContext2D, _x:number, _y:number, _map:Map){
         super(_domCtx)
-        this.x = _x
-        this.y = _y
-        this.realX = _x
-        this.realY = _y
+        this.x = _x/1.75
+        this.y = _y/1.75
+        this.realX = _x/1.75
+        this.realY = _y/1.75
         this.centerX = this.realX+16
         this.centerY = this.realY+16
         this.mvUp = false
