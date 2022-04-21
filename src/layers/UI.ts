@@ -71,8 +71,8 @@ export default class UI extends TextureLayer {
             }
         })
 
-        document.addEventListener("keydown", r => {
-            if(r.key === "r"){
+        document.addEventListener("keydown", t => {
+            if(t.key === "t"){
                 this.chatRef.isChat()
                 if (this.chatRef.chat == true){
                     // console.log('chat on')
