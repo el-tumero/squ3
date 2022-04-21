@@ -5,6 +5,7 @@ import UI from "./layers/UI";
 import map1Data from "./mapsData/map1.json" // importuje dane mapy z pliku
 import map2Data from "./mapsData/map2.json"
 import map3Data from "./mapsData/map3.json"
+import Chat from "./layers/Chat";
 
 
 const canvas = document.getElementById('canvas') as HTMLCanvasElement;
@@ -42,8 +43,8 @@ document.addEventListener("changeMap", (e) => {
         nMap.deleteObject(x, y)
         
     })
-
-    const ui = new UI(ctx, nMap)
+    const nChat = new Chat//(false)
+    const ui = new UI(ctx, nMap, nChat)
 
     game.addToDraw([nMap, ui])
     game.addToUpdate([ui])
@@ -57,7 +58,8 @@ atlasImg.onload = () => {
     mainAtlas = new Atlas(256, 256, atlasImg, 32)
 
     const map1 = new Map(ctx, 1, mainAtlas, map1Data.backgroundLayerBlockId, map1Data.objList, map1Data.colliders, map1Data.interactions)
-    const ui = new UI(ctx, map1)
+    const chat1 = new Chat//(false)
+    const ui = new UI(ctx, map1, chat1)
 
     game.addToDraw([map1, ui])
     game.addToUpdate([ui])

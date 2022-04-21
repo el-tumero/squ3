@@ -1,6 +1,8 @@
 * {
     margin: 0;
     padding: 0;
+    font-size: 1em;
+    font-family: Consolas;
 }
 #mainWrapper {
     background-color: black;
@@ -15,20 +17,45 @@
     width: auto;
 }
 #rightCtn {
-    position:fixed;
+    position:absolute;
     height: 100%;
     right: 0;
-    width: 10%;
-    /* border: 1px solid brown; */
-    
+    width: 20%;
 }
 #leftCtn {
-    position:fixed;
+    position:absolute;
     height: 100%;
     left: 0;
-    width: 10%;
-    /* border: 1px solid brown; */
+    width: 20%;
 }
+#chat {
+    opacity: 0.7;
+    visibility: hidden;
+    position:fixed;
+    background-color: rgb(31, 31, 31);
+    height: 100%;
+    left: 0;
+    width: 20%;
+    max-width: 20%;
+}
+#chatTopBar {
+    display: flex;
+    justify-content: center;
+    box-sizing: border-box;
+    border: 3px solid rgb(67, 67, 67);
+    padding-bottom: 10px;
+    position:fixed;
+    width: 20%;
+
+}
+#chatTitle {
+    /* visibility: hidden; */
+    color:white;
+    font-size: 2em;
+    width: 20%;
+
+}
+
 #canvasCtn {
     display: flex;
 }

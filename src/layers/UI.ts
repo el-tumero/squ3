@@ -3,6 +3,7 @@ import Map from "../Map";
 import Interaction from "./Interaction";
 import Letters from "./ui/Letters";
 import Textarea from "./ui/Textarea";
+import Chat from "./Chat";
 
 type UITextureSet = {
     panel:HTMLImageElement
@@ -12,6 +13,7 @@ type UITextureSet = {
 export default class UI extends TextureLayer {
 
     private mapRef:Map
+    private chatRef:Chat
     private intrRef:Interaction | null = null
     private isDetected:boolean = false
     private isActive:boolean = false
@@ -19,9 +21,10 @@ export default class UI extends TextureLayer {
     private font:Letters
     private hintTextarea:Textarea
 
-    constructor(_domCtx: CanvasRenderingContext2D, _mapRef:Map){
+    constructor(_domCtx: CanvasRenderingContext2D, _mapRef:Map, _chatRef:Chat){
         super(_domCtx)
         this.mapRef = _mapRef
+        this.chatRef = _chatRef
         this.canvas.width = 960
         this.canvas.height = 960
 
@@ -67,7 +70,21 @@ export default class UI extends TextureLayer {
                 }
             }
         })
-    }
+
+        document.addEventListener("keydown", r => {
+            if(r.key === "r"){
+                this.chatRef.isChat()
+                if (this.chatRef.chat == true){
+                    // console.log('chat on')
+                    this.chatRef.showChat()
+                }
+                if (this.chatRef.chat == false) {
+                    // console.log('chat off')
+                    this.chatRef.hideChat()
+                }
+            }
+        }
+    )}
 
     private detectInteraction():void{
         
