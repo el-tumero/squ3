@@ -27,6 +27,7 @@ export default class GameLoop{
 
     public addToUpdatePlayer(_thingsToUpdate:Array<any>){
         this.updatePlayerArr = _thingsToUpdate
+        // console.log(process.env.ASSETSURL)
     }
 
     public addToUpdate(_thingsToUpdate:Array<any>):void{

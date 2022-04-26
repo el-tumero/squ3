@@ -78,14 +78,14 @@ export default class Map{
         const player1 = new Player(this.ctx, 480-(32/2), 480-(32/2), this)
 
         const playerImg:HTMLImageElement = new Image();
-        playerImg.src = '../assets/graphics/spritesheets/player_spritesheet.png'    
+        playerImg.src = process.env.ASSETS_URL + 'spritesheets/player_spritesheet.png'    
 
         playerImg.onload = () => {
             player1.loadSpritesheet(playerImg)
         }
-
+       
         return player1
-
+        
     }
 
 

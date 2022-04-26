@@ -1,5 +1,6 @@
 const path = require('path')
 const nodeExternals = require('webpack-node-externals')
+const Dotenv = require('dotenv-webpack')
 
 const clientConfig = {
   entry: { main:'./src/client/main.ts' },
@@ -14,18 +15,23 @@ const clientConfig = {
     ],
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.js'],
+    extensions: ['.tsx', '.ts', '.js']
   },
+  plugins: [
+    new Dotenv({
+      path: './client.config.env'
+    })
+  ],
   output: {
     filename: '[name].js',
     path: path.resolve(__dirname, 'dist/client'),
-  },
+  }
 };
 
 const serverConfig = {
   entry: { index:'./src/server/index.ts'},
   mode: 'development',
-  target: 'es2020',
+  target: 'node',
   module: {
     rules: [
       {
@@ -36,14 +42,11 @@ const serverConfig = {
     ],
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.js'],
+    extensions: ['.tsx', '.ts', '.js']
   },
   output: {
     filename: '[name].js',
     path: path.resolve(__dirname, 'dist/server')
-  },
-  experiments: {
-    outputModule: true
   },
   externals: [
     nodeExternals()

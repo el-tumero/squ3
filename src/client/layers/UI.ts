@@ -39,7 +39,7 @@ export default class UI extends TextureLayer {
 
     private loadTextures():void{
         const panelTexture:HTMLImageElement = new Image();
-        panelTexture.src = "../assets/graphics/ui/panel.png"
+        panelTexture.src = process.env.ASSETS_URL + "ui/panel.png"
         panelTexture.onload = () => {
             this.panelTexture = panelTexture;
         }

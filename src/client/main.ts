@@ -16,7 +16,7 @@ ctx.scale(1.5,1.5)
 
 // loading texture atlas
 const atlasImg:HTMLImageElement = new Image();
-atlasImg.src = '../assets/graphics/atlas.png'
+atlasImg.src = process.env.ASSETS_URL + "atlas.png"
 
 const game = new GameLoop(60, ctx)
 let mainAtlas:Atlas;

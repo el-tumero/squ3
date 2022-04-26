@@ -28,7 +28,7 @@ export default class Letters{
 
     private setSprite():void{
         const lettersTexture:HTMLImageElement = new Image()
-        lettersTexture.src = "../assets/graphics/ui/letters.png"
+        lettersTexture.src = process.env.ASSETS_URL+ "ui/letters.png"
         this.sprite = lettersTexture
     }
 
