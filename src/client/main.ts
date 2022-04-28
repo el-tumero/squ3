@@ -6,7 +6,10 @@ import map1Data from "./mapsData/map1.json" // importuje dane mapy z pliku
 import map2Data from "./mapsData/map2.json"
 import map3Data from "./mapsData/map3.json"
 import Chat from "./layers/Chat";
+import { io } from "socket.io-client";
 
+
+let socket = io(process.env.SOCKET_URL!)
 
 const canvas = document.getElementById('canvas') as HTMLCanvasElement;
 const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;

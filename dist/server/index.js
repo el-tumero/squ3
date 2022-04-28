@@ -16,7 +16,7 @@
   \*****************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-eval("\nvar __importDefault = (this && this.__importDefault) || function (mod) {\n    return (mod && mod.__esModule) ? mod : { \"default\": mod };\n};\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nconst express_1 = __importDefault(__webpack_require__(/*! express */ \"express\"));\nconst path_1 = __importDefault(__webpack_require__(/*! path */ \"path\"));\nconst app = (0, express_1.default)();\nconst port = 3000;\napp.get('/', (req, res) => {\n    res.send('Test');\n});\napp.use('/assets', express_1.default.static(path_1.default.join(process.cwd(), 'assets')));\napp.listen(port, () => {\n    console.log(\"Server is runinn at port \" + port);\n});\n\n\n//# sourceURL=webpack://typescript-template/./src/server/index.ts?");
+eval("\nvar __importDefault = (this && this.__importDefault) || function (mod) {\n    return (mod && mod.__esModule) ? mod : { \"default\": mod };\n};\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nconst express_1 = __importDefault(__webpack_require__(/*! express */ \"express\"));\nconst path_1 = __importDefault(__webpack_require__(/*! path */ \"path\"));\nconst http_1 = __importDefault(__webpack_require__(/*! http */ \"http\"));\nconst socket_io_1 = __webpack_require__(/*! socket.io */ \"socket.io\");\nconst app = (0, express_1.default)();\nconst port = 3000;\nconst server = http_1.default.createServer(app);\nconst io = new socket_io_1.Server(server, {\n    cors: {\n        origin: '*'\n    }\n});\napp.get('/', (req, res) => {\n    res.send('Test');\n});\napp.use('/assets', express_1.default.static(path_1.default.join(process.cwd(), 'assets')));\nio.on(\"connection\", socket => {\n    console.log(\"Connected!!!\");\n});\nserver.listen(port, () => {\n    console.log(\"Server is runinn at port \" + port);\n});\n\n\n//# sourceURL=webpack://typescript-template/./src/server/index.ts?");
 
 /***/ }),
 
@@ -27,6 +27,26 @@ eval("\nvar __importDefault = (this && this.__importDefault) || function (mod) {
 /***/ ((module) => {
 
 module.exports = require("express");
+
+/***/ }),
+
+/***/ "socket.io":
+/*!****************************!*\
+  !*** external "socket.io" ***!
+  \****************************/
+/***/ ((module) => {
+
+module.exports = require("socket.io");
+
+/***/ }),
+
+/***/ "http":
+/*!***********************!*\
+  !*** external "http" ***!
+  \***********************/
+/***/ ((module) => {
+
+module.exports = require("http");
 
 /***/ }),
 
