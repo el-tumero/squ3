@@ -6,10 +6,10 @@ import map1Data from "./mapsData/map1.json" // importuje dane mapy z pliku
 import map2Data from "./mapsData/map2.json"
 import map3Data from "./mapsData/map3.json"
 import Chat from "./layers/Chat";
-import { io } from "socket.io-client";
+import {io} from "socket.io-client"
 
 
-let socket = io(process.env.SOCKET_URL!)
+var socket = io(process.env.SOCKET_URL!)
 
 const canvas = document.getElementById('canvas') as HTMLCanvasElement;
 const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -36,7 +36,7 @@ document.addEventListener("changeMap", (e) => {
     const mapData = mapsData[id -1]
     //console.log("MAP CHANGE!")
 
-    const nMap = new Map(ctx, id, mainAtlas, mapData.backgroundLayerBlockId, mapData.objList, mapData.colliders, mapData.interactions)
+    const nMap = new Map(ctx, id, mainAtlas, mapData.backgroundLayerBlockId, mapData.objList, mapData.colliders, mapData.interactions, socket)
 
     document.addEventListener("openDoor", (e) => {
         console.log('door opened')
@@ -60,7 +60,7 @@ document.addEventListener("changeMap", (e) => {
 atlasImg.onload = () => {
     mainAtlas = new Atlas(256, 256, atlasImg, 32)
 
-    const map1 = new Map(ctx, 1, mainAtlas, map1Data.backgroundLayerBlockId, map1Data.objList, map1Data.colliders, map1Data.interactions)
+    const map1 = new Map(ctx, 1, mainAtlas, map1Data.backgroundLayerBlockId, map1Data.objList, map1Data.colliders, map1Data.interactions, socket)
     const chat1 = new Chat//(false)
     const ui = new UI(ctx, map1, chat1)
 

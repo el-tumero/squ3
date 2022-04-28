@@ -2,6 +2,8 @@ import Map from "../Map";
 import Collision from "./Collision";
 import Interaction from "./Interaction";
 import TextureLayer from "./TextureLayer";
+import { io, Socket } from "socket.io-client";
+
 
 export default class Player extends TextureLayer{
     x:number
@@ -20,6 +22,7 @@ export default class Player extends TextureLayer{
     colliders:Array<Collision> = []
     map:Map
     interactions:Array<Interaction> = []
+    socket:Socket;
     
 
     spriteSize:number = 32
@@ -41,9 +44,12 @@ export default class Player extends TextureLayer{
         this.mvLeft = false
         this.initControls()
         this.map = _map
+        this.socket = _map.getSocket()
 
         this.interactions = _map.getInteractions()
         this.colliders = _map.getColliders()
+
+        this.dataFromSocket()
     }
 
 
@@ -52,18 +58,22 @@ export default class Player extends TextureLayer{
             if(e.key == "ArrowUp"){
                 this.mvUp = true
                 this.facing = 'up'
+                this.socket.emit("move", [1, 1, 0, 0, 0])
             }
             if(e.key == "ArrowDown"){
                 this.mvDown = true
                 this.facing = 'down'
+                this.socket.emit("move", [1, 0, 1, 0, 0])
             }
             if(e.key == "ArrowRight"){
                 this.mvRight = true
                 this.facing = 'right'
+                this.socket.emit("move", [1, 0, 0, 1, 0])
             }
             if(e.key == "ArrowLeft"){
                 this.mvLeft = true
                 this.facing= 'left'
+                this.socket.emit("move", [1, 0, 0, 0, 1])
             }
             
         })
@@ -72,18 +82,22 @@ export default class Player extends TextureLayer{
             if(e.key == "ArrowUp"){
                 this.mvUp = false
                 this.facing = 'up'
+                this.socket.emit("move", [0, 1, 0, 0, 0])
             }
             if(e.key == "ArrowDown"){
                 this.mvDown = false
                 this.facing = 'down'
+                this.socket.emit("move", [0, 0, 1, 0, 0])
             }
             if(e.key == "ArrowRight"){
                 this.mvRight = false
                 this.facing = 'right'
+                this.socket.emit("move", [0, 0, 0, 1, 0])
             }
             if(e.key == "ArrowLeft"){
                 this.mvLeft = false
                 this.facing= 'left'
+                this.socket.emit("move", [0, 0, 0, 0, 1])
             }
         })
     }
@@ -114,6 +128,54 @@ export default class Player extends TextureLayer{
 
     public loadSpritesheet(_sprite:HTMLImageElement){
         this.sprite = _sprite
+    }
+
+    private dataFromSocket(){
+        this.socket.on("moveOther", data => {
+            console.log(data)
+
+            if(data == 0){
+                this.mvUp = false
+                this.mvDown = false
+                this.mvRight = false
+                this.mvLeft = false
+            }
+
+
+            if(data[0] == 1){
+                if(data[1] == 1){
+                    this.mvUp = true
+                }
+                if(data[2] == 1){
+                    this.mvDown = true
+                }
+                if(data[3] == 1){
+                    this.mvRight = true
+                }
+                if(data[4] == 1){
+                    this.mvLeft = true
+                }
+            }
+
+            if(data[0] == 0){
+                if(data[1] == 1){
+                    this.mvUp = false
+                }
+                if(data[2] == 1){
+                    this.mvDown = false
+                }
+                if(data[3] == 1){
+                    this.mvRight = false
+                }
+                if(data[4] == 1){
+                    this.mvLeft = false
+                }
+            }
+
+            
+
+
+        })
     }
 
     public updatePositionInLayers(_frames: number):void{
@@ -149,6 +211,8 @@ export default class Player extends TextureLayer{
             this.centerX = this.realX+16
             this.animate(_frames, 'left')
         } 
+
+        
         
         // aktualizowanie pozycji warstw
         this.map.updateLayersPosition(this.mvUp, this.mvDown, this.mvRight, this.mvLeft)

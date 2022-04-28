@@ -5,6 +5,7 @@ import ObjectLayer from "./layers/ObjectLayer"
 import Collision from "./layers/Collision"
 import Player from "./layers/Player"
 import Interaction from "./layers/Interaction"
+import { Socket } from "socket.io-client"
 
 type MapObject = {
     id: number,
@@ -34,17 +35,19 @@ export default class Map{
     private localPlayer:Player
     private collisions:Array<Collision> = []
     private interactions:Array<Interaction> = []
+    private socket:Socket
 
-    constructor(_ctx:CanvasRenderingContext2D, _id:number, _atlas:Atlas, _bgLayerBlockId:number, _objs:Array<MapObject>, _collisions:Array<ColliderObject>, _interactions:Array<InteractionObject>){
+    constructor(_ctx:CanvasRenderingContext2D, _id:number, _atlas:Atlas, _bgLayerBlockId:number, _objs:Array<MapObject>, _collisions:Array<ColliderObject>, _interactions:Array<InteractionObject>, _socket:Socket){
         this.ctx = _ctx
         this.id = _id
         
         this.backgroundLayer = new BackgroundLayer(_ctx, _atlas, _bgLayerBlockId)
-
-        
+ 
         this.objectLayer = new ObjectLayer(_ctx, _atlas, this.createGrid(_objs))
 
         this.objectLayer.loadObjects()
+
+        this.socket = _socket
 
 
         this.localPlayer = this.createPlayer()
@@ -100,6 +103,10 @@ export default class Map{
 
     public getInteractions():Array<Interaction>{
         return this.interactions
+    }
+
+    public getSocket():Socket{
+        return this.socket
     }
 
     public draw(){
