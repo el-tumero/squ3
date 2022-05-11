@@ -22,7 +22,11 @@ app.use('/assets', express.static(path.join(process.cwd(), 'assets')))
 io.on("connection", socket => {
     console.log("Connected!")
 
-    socket.on("move", data => {
+    // socket.on("move", data => {
+    //     socket.broadcast.emit("moveOther", data)
+    // })
+
+    socket.on("position", data => {
         socket.broadcast.emit("moveOther", data)
     })
 

@@ -22,7 +22,13 @@ export default class Player extends TextureLayer{
     colliders:Array<Collision> = []
     map:Map
     interactions:Array<Interaction> = []
-    socket:Socket;
+    socket:Socket
+    deltaX:number = 0
+    deltaY:number = 0
+    destX:number = 0
+    destY:number = 0
+    ready:boolean = false;
+    moveDone:boolean = false;
     
 
     spriteSize:number = 32
@@ -32,10 +38,10 @@ export default class Player extends TextureLayer{
 
     constructor(_domCtx: CanvasRenderingContext2D, _x:number, _y:number, _map:Map){
         super(_domCtx)
-        this.x = _x/1.5
-        this.y = _y/1.5
-        this.realX = _x/1.5
-        this.realY = _y/1.5
+        this.x = Math.floor(_x/1.5)
+        this.y = Math.floor(_y/1.5)
+        this.realX = Math.floor(_x/1.5)
+        this.realY = Math.floor(_y/1.5)
         this.centerX = this.realX+16
         this.centerY = this.realY+16
         this.mvUp = false
@@ -58,22 +64,18 @@ export default class Player extends TextureLayer{
             if(e.key == "ArrowUp"){
                 this.mvUp = true
                 this.facing = 'up'
-                this.socket.emit("move", [1, 1, 0, 0, 0])
             }
             if(e.key == "ArrowDown"){
                 this.mvDown = true
                 this.facing = 'down'
-                this.socket.emit("move", [1, 0, 1, 0, 0])
             }
             if(e.key == "ArrowRight"){
                 this.mvRight = true
                 this.facing = 'right'
-                this.socket.emit("move", [1, 0, 0, 1, 0])
             }
             if(e.key == "ArrowLeft"){
                 this.mvLeft = true
                 this.facing= 'left'
-                this.socket.emit("move", [1, 0, 0, 0, 1])
             }
             
         })
@@ -82,22 +84,18 @@ export default class Player extends TextureLayer{
             if(e.key == "ArrowUp"){
                 this.mvUp = false
                 this.facing = 'up'
-                this.socket.emit("move", [0, 1, 0, 0, 0])
             }
             if(e.key == "ArrowDown"){
                 this.mvDown = false
                 this.facing = 'down'
-                this.socket.emit("move", [0, 0, 1, 0, 0])
             }
             if(e.key == "ArrowRight"){
                 this.mvRight = false
                 this.facing = 'right'
-                this.socket.emit("move", [0, 0, 0, 1, 0])
             }
             if(e.key == "ArrowLeft"){
                 this.mvLeft = false
                 this.facing= 'left'
-                this.socket.emit("move", [0, 0, 0, 0, 1])
             }
         })
     }
@@ -132,49 +130,17 @@ export default class Player extends TextureLayer{
 
     private dataFromSocket(){
         this.socket.on("moveOther", data => {
-            console.log(data)
+            //console.log(data)
 
-            if(data == 0){
-                this.mvUp = false
-                this.mvDown = false
-                this.mvRight = false
-                this.mvLeft = false
-            }
+            this.destX = data.x
+            this.destY = data.y
 
+            this.deltaX = this.realX - data.x
+            this.deltaY = this.realY - data.y
 
-            if(data[0] == 1){
-                if(data[1] == 1){
-                    this.mvUp = true
-                }
-                if(data[2] == 1){
-                    this.mvDown = true
-                }
-                if(data[3] == 1){
-                    this.mvRight = true
-                }
-                if(data[4] == 1){
-                    this.mvLeft = true
-                }
-            }
+            this.ready = true
 
-            if(data[0] == 0){
-                if(data[1] == 1){
-                    this.mvUp = false
-                }
-                if(data[2] == 1){
-                    this.mvDown = false
-                }
-                if(data[3] == 1){
-                    this.mvRight = false
-                }
-                if(data[4] == 1){
-                    this.mvLeft = false
-                }
-            }
-
-            
-
-
+            console.log(this.deltaX, this.deltaY)
         })
     }
 
@@ -188,6 +154,44 @@ export default class Player extends TextureLayer{
         //     width: 32,
         //     height: 32
         // }
+
+
+        // console.log(_frames)
+
+        // if(this.deltaY > 0 && this.realX != this.realX + this.deltaY){
+        //     this.deltaY -=
+        //     this.mvUp = true;
+        // }else{
+        //     this.deltaX = 0;
+        //     this.mvUp = false;
+        // }
+
+        // if(this.deltaY == 0) this.mvUp = false
+
+        if(this.ready){
+
+
+            if(this.deltaY > 0 && !this.moveDone){
+                this.mvUp = true
+            }
+            if((this.destY <= this.realX) && !this.moveDone){
+                this.mvUp = false
+                this.moveDone = true
+            }
+
+            if(this.destY !== this.realY){
+                this.moveDone = false
+            }
+        
+        }
+
+
+        // if(this.deltaY > 0){
+        //     this.mvUp = true
+        //     // this.deltaY = this.realY - data.y
+
+        // }
+
 
         
         if(this.mvUp){
@@ -210,8 +214,14 @@ export default class Player extends TextureLayer{
             this.realX -= this.speedX
             this.centerX = this.realX+16
             this.animate(_frames, 'left')
-        } 
+        }
+        
+        
 
+        if(_frames == 30){
+            this.socket.emit('position', {x: this.realX, y: this.realY})
+            //console.log(this.realX, this.realY)
+        }
         
         
         // aktualizowanie pozycji warstw
