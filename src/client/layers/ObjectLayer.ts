@@ -16,6 +16,10 @@ export default class ObjectLayer extends TextureLayer {
     } 
     //tutaj jest git o to własnie chodziło 
 
+    public getCtx():CanvasRenderingContext2D{
+        return this.ctx;
+    }
+
     public loadObjects(){
         for (let i = 0; i < this.canvas.width/this.blockSize; i++) {
             for (let j = 0; j < this.canvas.height/this.blockSize; j++) {
@@ -52,7 +56,11 @@ export default class ObjectLayer extends TextureLayer {
     }
 
     public draw():void {
+         // mega temp
+        this.loadObjects()
+        
         this.domCtx.drawImage(this.canvas, this.x, this.y)
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     }
 
 }

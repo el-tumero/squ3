@@ -9,6 +9,15 @@ import Chat from "./layers/Chat";
 import {io} from "socket.io-client"
 
 
+declare global {
+    interface Window {
+        userId:any
+        otherUserId:any
+    }
+}
+// TO TEŻ MOCNO NA SZYBKO
+
+
 var socket = io(process.env.SOCKET_URL!)
 
 const canvas = document.getElementById('canvas') as HTMLCanvasElement;
@@ -28,6 +37,25 @@ let mainAtlas:Atlas;
 const mapsData:Array<any> = [map1Data, map2Data, map3Data]
 
 // INFO: na razie działa tylko usuwanie obiektów z warstwy obiektowej, nie znika kolizja, to jest do dodanie i do pomyslenia
+
+// VERY TEMPORARY (TO DELETE SOON GUYS) \/
+
+const urlParams = new URLSearchParams(window.location.search)
+const userId = urlParams.get('user');
+
+window.userId = userId
+// console.log(userId)
+
+if(userId == '0'){
+    window.otherUserId = 1
+}
+
+if(userId == '1'){
+    window.otherUserId = 0
+}
+
+
+
 
 document.addEventListener("changeMap", (e) => {
     //console.log()

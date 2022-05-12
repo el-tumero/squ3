@@ -1,7 +1,7 @@
 export default class TextureLayer {
     
     protected canvas:HTMLCanvasElement
-    protected ctx:CanvasRenderingContext2D
+    protected ctx:CanvasRenderingContext2D 
     protected domCtx:CanvasRenderingContext2D
     
 

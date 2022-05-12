@@ -55,7 +55,7 @@ export default class Player extends TextureLayer{
         this.interactions = _map.getInteractions()
         this.colliders = _map.getColliders()
 
-        this.dataFromSocket()
+        // this.dataFromSocket()
     }
 
 
@@ -145,54 +145,6 @@ export default class Player extends TextureLayer{
     }
 
     public updatePositionInLayers(_frames: number):void{
-
-        // console.log(_frames)
-
-        // let borderRect = {
-        //     x: 12*this.blockSize,
-        //     y: 14*this.blockSize,
-        //     width: 32,
-        //     height: 32
-        // }
-
-
-        // console.log(_frames)
-
-        // if(this.deltaY > 0 && this.realX != this.realX + this.deltaY){
-        //     this.deltaY -=
-        //     this.mvUp = true;
-        // }else{
-        //     this.deltaX = 0;
-        //     this.mvUp = false;
-        // }
-
-        // if(this.deltaY == 0) this.mvUp = false
-
-        if(this.ready){
-
-
-            if(this.deltaY > 0 && !this.moveDone){
-                this.mvUp = true
-            }
-            if((this.destY <= this.realX) && !this.moveDone){
-                this.mvUp = false
-                this.moveDone = true
-            }
-
-            if(this.destY !== this.realY){
-                this.moveDone = false
-            }
-        
-        }
-
-
-        // if(this.deltaY > 0){
-        //     this.mvUp = true
-        //     // this.deltaY = this.realY - data.y
-
-        // }
-
-
         
         if(this.mvUp){
             this.realY -= this.speedY
@@ -219,8 +171,8 @@ export default class Player extends TextureLayer{
         
 
         if(_frames == 30){
-            this.socket.emit('position', {x: this.realX, y: this.realY})
-            //console.log(this.realX, this.realY)
+            this.socket.emit('position', {id: window.userId, x: this.realX, y: this.realY})
+            // console.log(this.realX, this.realY)
         }
         
         

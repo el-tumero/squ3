@@ -6,6 +6,10 @@ import Collision from "./layers/Collision"
 import Player from "./layers/Player"
 import Interaction from "./layers/Interaction"
 import { Socket } from "socket.io-client"
+import OtherPlayer from "./layers/OtherPlayer"
+
+
+
 
 type MapObject = {
     id: number,
@@ -36,6 +40,8 @@ export default class Map{
     private collisions:Array<Collision> = []
     private interactions:Array<Interaction> = []
     private socket:Socket
+    private otherPlayer:OtherPlayer
+    private playersCords:Array<Array<number>> = [[464, 464], [320, 256]]
 
     constructor(_ctx:CanvasRenderingContext2D, _id:number, _atlas:Atlas, _bgLayerBlockId:number, _objs:Array<MapObject>, _collisions:Array<ColliderObject>, _interactions:Array<InteractionObject>, _socket:Socket){
         this.ctx = _ctx
@@ -45,15 +51,23 @@ export default class Map{
  
         this.objectLayer = new ObjectLayer(_ctx, _atlas, this.createGrid(_objs))
 
+        
+        
+
         this.objectLayer.loadObjects()
 
         this.socket = _socket
+        //console.log(this.socket)
 
+
+        this.otherPlayer = this.createOtherPlayers()
 
         this.localPlayer = this.createPlayer()
         this.addCollision(_collisions)
         this.addInteractions(_interactions)
         //console.log(this.localPlayer.interactions[0])
+
+    
         
     }
 
@@ -78,10 +92,17 @@ export default class Map{
     }
 
     private createPlayer():Player {
-        const player1 = new Player(this.ctx, 480-(32/2), 480-(32/2), this)
+
+        const id:number = window.userId as number
+
+        const x:number = this.playersCords[id][0]
+        const y:number = this.playersCords[id][1]
+
+        const player1 = new Player(this.ctx, x, y, this)
+        // const player1 = new Player(this.ctx, 480-(32/2), 480-(32/2), this)
 
         const playerImg:HTMLImageElement = new Image();
-        playerImg.src = process.env.ASSETS_URL + 'spritesheets/player_spritesheet.png'    
+        playerImg.src = process.env.ASSETS_URL + 'spritesheets/player_spritesheet' + window.userId + '.png';    
 
         playerImg.onload = () => {
             player1.loadSpritesheet(playerImg)
@@ -89,6 +110,29 @@ export default class Map{
        
         return player1
         
+    }
+
+    private createOtherPlayers():OtherPlayer{
+
+        const id:number = window.otherUserId as number
+
+        const x = this.playersCords[id][0]
+        const y = this.playersCords[id][1]
+
+        // const cords:Array<number> = [playerCords[], playerCords] 
+
+
+        // trzeba stworzyc warstwe nowych playerow
+        const otherPlayer = new OtherPlayer(this.objectLayer.getCtx(), x, y, this)
+
+        const playerImg:HTMLImageElement = new Image();
+        playerImg.src = process.env.ASSETS_URL + 'spritesheets/player_spritesheet' + id+ '.png';    
+
+        playerImg.onload = () => {
+            this.otherPlayer.loadSpritesheet(playerImg)
+        }
+
+        return otherPlayer
     }
 
 
@@ -112,6 +156,7 @@ export default class Map{
     public draw(){
         this.backgroundLayer.draw()
         this.objectLayer.draw()
+        this.otherPlayer.draw()
         this.localPlayer.draw()
     }
 

@@ -27,7 +27,9 @@ io.on("connection", socket => {
     // })
 
     socket.on("position", data => {
-        socket.broadcast.emit("moveOther", data)
+        //console.log(data)
+        // console.log(data)
+        io.emit("moveOther", data)
     })
 
 
