@@ -93,7 +93,7 @@ atlasImg.onload = () => {
     const ui = new UI(ctx, map1, chat1)
 
     game.addToDraw([map1, ui])
-    game.addToUpdate([ui])
+    game.addToUpdate([ui, map1.getOtherPlayer()])
     game.addToUpdatePlayer([map1.getLocalPlayer()])
 
     game.startAnimating()

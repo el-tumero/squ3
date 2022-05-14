@@ -36,7 +36,8 @@ export default class OtherPlayer extends TextureLayer{
     movedX:number = 0
     movedY:number = 0
 
-    direction:string = 'none'
+    directionX:string = 'none'
+    directionY:string = 'none'
     
 
     spriteSize:number = 32
@@ -98,44 +99,87 @@ export default class OtherPlayer extends TextureLayer{
 
             // console.log(data)
 
-
+            // console.log(data)
 
             if(data.id == window.otherUserId){
 
                 //const deltaXBlocks:number = Math.round( (this.realX - data.x) / 32 ) 
                 //const deltaYBlocks:number = Math.round( (this.realY - data.y) / 32 )
 
-
-                this.destY = data.y
                 this.destX = data.x
+                this.destY = data.y
+            
 
 
-                if(data.y == 0 && data.x == 0) this.direction = 'none'
-                if(data.y < this.realY) this.direction = 'up'
-                if(data.y > this.realY) this.direction = 'down'
-                if(data.x > this.realX) this.direction = 'right'
-                if(data.x < this.realX) this.direction = 'left'
+                //console.log(data.x ,data.y)
+                //console.log(this.realX, this.realY)
 
-                console.log(this.direction)
+
+                if(data.y == 0) this.directionY = 'none'
+                if(data.x == 0) this.directionX = 'none'
+
+                if(data.y < this.realY) this.directionY = 'up'
+                if(data.y > this.realY) this.directionY = 'down'
+
+                if(data.x > this.realX) this.directionX = 'right'
+                if(data.x < this.realX) this.directionX = 'left'
+
+                // console.log(this.direction)
 
             }
         })
     }
 
+    private animate(_frames: number, deltaX: number, deltaY:number ):void{
+
+        if(this.directionY == "up"){
+            this.sy = 3 * this.spriteSize
+            if(_frames == 0) this.sx = 0
+            if(_frames == 20) this.sx = this.spriteSize
+            if(_frames == 40) this.sx = 2 * this.spriteSize
+        }
+        if(this.directionY == "down"){
+            this.sy = 0
+            if(_frames == 0) this.sx = 0
+            if(_frames == 20) this.sx = this.spriteSize
+            if(_frames == 40) this.sx = 2 * this.spriteSize
+        }
+        if(this.directionX == "left"){
+            this.sy = 1 * this.spriteSize
+            if(_frames == 0) this.sx = 0
+            if(_frames == 20) this.sx = this.spriteSize
+            if(_frames == 40) this.sx = 2 * this.spriteSize
+        }
+        if(this.directionX == "right"){
+            this.sy = 2 * this.spriteSize
+            if(_frames == 0) this.sx = 0
+            if(_frames == 20) this.sx = this.spriteSize
+            if(_frames == 40) this.sx = 2 * this.spriteSize
+        }
+
+        if(deltaX == 0) this.directionX = 'none'
+        if(deltaY == 0) this.directionY = 'none'
+        
+    }
 
 
-    public update():void{
+    public update(_frames:number):void{
 
+        // NOTE
+        // animacja sie nie przerywa cos trzeba na to poradzic? np jak delta = 0 no to siema
+        // nwm cos sie psuje jeszcze
+  
+        const deltaYBlocks:number = Math.round( (this.realY - this.destY) / 32 )
 
-        const deltaYBlocks:number = Math.ceil( (this.realY - this.destY) / 32 )
+        const deltaXBlocks:number = Math.round( (this.destX - this.realX) / 32 )
 
-        const deltaXBlocks:number = Math.ceil( (this.destX - this.realX) / 32 )
+        this.animate(_frames, deltaXBlocks, deltaYBlocks)
 
         //console.log(deltaXBlocks)
 
         // console.log(deltaYBlocks)
 
-        if(deltaYBlocks > 0 && this.direction == 'up'){
+        if(deltaYBlocks > 0 && this.directionY == 'up'){
             // console.log("moving up")
             this.mvUp = true
         }
@@ -143,7 +187,7 @@ export default class OtherPlayer extends TextureLayer{
             this.mvUp = false
         } 
 
-        if(deltaYBlocks < 0 && this.direction == 'down'){
+        if(deltaYBlocks < 0 && this.directionY == 'down'){
             // console.log("moving down")
             this.mvDown = true
         }
@@ -151,21 +195,21 @@ export default class OtherPlayer extends TextureLayer{
             this.mvDown = false
         } 
 
-        if(deltaXBlocks > 0 && this.direction == 'right'){
+        if(deltaXBlocks > 0 && this.directionX == 'right'){
             //console.log("moving right")
             this.mvRight = true
         }else{
             this.mvRight = false
         }
 
-        if(deltaXBlocks < 0 && this.direction == 'left'){
+        if(deltaXBlocks < 0 && this.directionX == 'left'){
             //console.log("moving right")
             this.mvLeft = true
         }else{
             this.mvLeft = false
         }
 
-        //if(deltaYBlocks)
+        
 
 
 

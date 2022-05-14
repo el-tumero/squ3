@@ -140,7 +140,7 @@ export default class Map{
         this.backgroundLayer.updatePosition(mvUp, mvDown, mvRight, mvLeft)
         this.objectLayer.updatePosition(mvUp, mvDown, mvRight, mvLeft)
         // megaTemp
-        this.otherPlayer.update();
+        //this.otherPlayer.update();
     }
 
     public getColliders():Array<Collision>{
@@ -153,6 +153,10 @@ export default class Map{
 
     public getSocket():Socket{
         return this.socket
+    }
+
+    public getOtherPlayer():OtherPlayer{
+        return this.otherPlayer
     }
 
     public draw(){
