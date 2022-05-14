@@ -139,6 +139,8 @@ export default class Map{
     public updateLayersPosition(mvUp:boolean, mvDown:boolean, mvRight:boolean, mvLeft:boolean):void{
         this.backgroundLayer.updatePosition(mvUp, mvDown, mvRight, mvLeft)
         this.objectLayer.updatePosition(mvUp, mvDown, mvRight, mvLeft)
+        // megaTemp
+        this.otherPlayer.update();
     }
 
     public getColliders():Array<Collision>{

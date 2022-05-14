@@ -22,12 +22,21 @@ export default class OtherPlayer extends TextureLayer{
     map:Map
    
     socket:Socket
-    deltaX:number = 0
-    deltaY:number = 0
+    //deltaXBlocks:number = 0
+    //deltaYBlocks:number = 0
+    
+    prevY = 0
+
+
     destX:number = 0
     destY:number = 0
     ready:boolean = false;
     moveDone:boolean = false;
+
+    movedX:number = 0
+    movedY:number = 0
+
+    direction:string = 'none'
     
 
     spriteSize:number = 32
@@ -89,74 +98,104 @@ export default class OtherPlayer extends TextureLayer{
 
             // console.log(data)
 
+
+
             if(data.id == window.otherUserId){
-                this.realX = data.x
-                this.realY = data.y
-            }
-            // console.log(data)
 
-            // this.destX = data.x
-            // this.destY = data.y
-
-            // this.deltaX = this.realX - data.x
-            // this.deltaY = this.realY - data.y
-
-            // this.ready = true
-
-            // console.log(this.deltaX, this.deltaY)
-        })
-    }
+                //const deltaXBlocks:number = Math.round( (this.realX - data.x) / 32 ) 
+                //const deltaYBlocks:number = Math.round( (this.realY - data.y) / 32 )
 
 
-    private initControls():void{
-        document.addEventListener('keydown', e=> {
-            if(e.key == "p"){
-                this.realX += 3;
-            }
-            if(e.key == "o"){
-                this.realX -= 3;
+                this.destY = data.y
+                this.destX = data.x
+
+
+                if(data.y == 0 && data.x == 0) this.direction = 'none'
+                if(data.y < this.realY) this.direction = 'up'
+                if(data.y > this.realY) this.direction = 'down'
+                if(data.x > this.realX) this.direction = 'right'
+                if(data.x < this.realX) this.direction = 'left'
+
+                console.log(this.direction)
+
             }
         })
     }
-        
-        
-        
 
-        
 
-       
+
+    public update():void{
+
+
+        const deltaYBlocks:number = Math.ceil( (this.realY - this.destY) / 32 )
+
+        const deltaXBlocks:number = Math.ceil( (this.destX - this.realX) / 32 )
+
+        //console.log(deltaXBlocks)
+
+        // console.log(deltaYBlocks)
+
+        if(deltaYBlocks > 0 && this.direction == 'up'){
+            // console.log("moving up")
+            this.mvUp = true
+        }
+        else{
+            this.mvUp = false
+        } 
+
+        if(deltaYBlocks < 0 && this.direction == 'down'){
+            // console.log("moving down")
+            this.mvDown = true
+        }
+        else{
+            this.mvDown = false
+        } 
+
+        if(deltaXBlocks > 0 && this.direction == 'right'){
+            //console.log("moving right")
+            this.mvRight = true
+        }else{
+            this.mvRight = false
+        }
+
+        if(deltaXBlocks < 0 && this.direction == 'left'){
+            //console.log("moving right")
+            this.mvLeft = true
+        }else{
+            this.mvLeft = false
+        }
+
+        //if(deltaYBlocks)
+
+
+
+        if(this.mvUp){
+            this.realY -= this.speedY
+        } 
+        if(this.mvDown){
+            this.realY += this.speedY
+        } 
+        if(this.mvRight){
+            this.realX += this.speedX
+        } 
+        if(this.mvLeft){
+            this.realX -= this.speedX
+        }
+
+    }
+
+    // private initControls():void{
+    //     document.addEventListener('keydown', e=> {
+    //         if(e.key == "p"){
+    //             this.realX += 3;
+    //         }
+    //         if(e.key == "o"){
+    //             this.realX -= 3;
+    //         }
+    //     })
+    // }
+        
     
-
-    private animate(_frames: number, _direction:String):void{
-
-        if(_direction == "up"){
-            this.sy = 3 * this.spriteSize
-            if(_frames == 0) this.sx = 0
-            if(_frames == 20) this.sx = this.spriteSize
-            if(_frames == 40) this.sx = 2 * this.spriteSize
-        }
-        if(_direction == "down"){
-            this.sy = 0
-            if(_frames == 0) this.sx = 0
-            if(_frames == 20) this.sx = this.spriteSize
-            if(_frames == 40) this.sx = 2 * this.spriteSize
-        }
-        if(_direction == "left"){
-            this.sy = 1 * this.spriteSize
-            if(_frames == 0) this.sx = 0
-            if(_frames == 20) this.sx = this.spriteSize
-            if(_frames == 40) this.sx = 2 * this.spriteSize
-        }
-        if(_direction == "right"){
-            this.sy = 2 * this.spriteSize
-            if(_frames == 0) this.sx = 0
-            if(_frames == 20) this.sx = this.spriteSize
-            if(_frames == 40) this.sx = 2 * this.spriteSize
-        }
-        
-    }
-
-
     public draw():void{
 
         this.domCtx.drawImage(this.sprite,

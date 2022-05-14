@@ -170,9 +170,9 @@ export default class Player extends TextureLayer{
         
         
 
-        if(_frames == 30){
+        if(_frames == 0 || _frames == 15 || _frames == 30 || _frames == 45){
             this.socket.emit('position', {id: window.userId, x: this.realX, y: this.realY})
-            // console.log(this.realX, this.realY)
+            // id 
         }
         
         
