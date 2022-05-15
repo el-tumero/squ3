@@ -78,7 +78,7 @@ document.addEventListener("changeMap", (e) => {
     const ui = new UI(ctx, nMap, nChat)
 
     game.addToDraw([nMap, ui])
-    game.addToUpdate([ui])
+    game.addToUpdate([ui]) //dodac update innych graczy
     game.addToUpdatePlayer([nMap.getLocalPlayer()])
 
 

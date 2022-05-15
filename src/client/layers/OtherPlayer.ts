@@ -169,18 +169,12 @@ export default class OtherPlayer extends TextureLayer{
         // animacja sie nie przerywa cos trzeba na to poradzic? np jak delta = 0 no to siema
         // nwm cos sie psuje jeszcze
   
-        const deltaYBlocks:number = Math.round( (this.realY - this.destY) / 32 )
-
-        const deltaXBlocks:number = Math.round( (this.destX - this.realX) / 32 )
+        const deltaYBlocks:number = this.realY - this.destY
+        const deltaXBlocks:number = this.destX - this.realX
 
         this.animate(_frames, deltaXBlocks, deltaYBlocks)
 
-        //console.log(deltaXBlocks)
-
-        // console.log(deltaYBlocks)
-
         if(deltaYBlocks > 0 && this.directionY == 'up'){
-            // console.log("moving up")
             this.mvUp = true
         }
         else{
@@ -188,7 +182,6 @@ export default class OtherPlayer extends TextureLayer{
         } 
 
         if(deltaYBlocks < 0 && this.directionY == 'down'){
-            // console.log("moving down")
             this.mvDown = true
         }
         else{
@@ -196,23 +189,19 @@ export default class OtherPlayer extends TextureLayer{
         } 
 
         if(deltaXBlocks > 0 && this.directionX == 'right'){
-            //console.log("moving right")
             this.mvRight = true
         }else{
             this.mvRight = false
         }
 
         if(deltaXBlocks < 0 && this.directionX == 'left'){
-            //console.log("moving right")
             this.mvLeft = true
         }else{
             this.mvLeft = false
         }
 
         
-
-
-
+        // moving on screen
         if(this.mvUp){
             this.realY -= this.speedY
         } 
@@ -227,18 +216,6 @@ export default class OtherPlayer extends TextureLayer{
         }
 
     }
-
-    // private initControls():void{
-    //     document.addEventListener('keydown', e=> {
-    //         if(e.key == "p"){
-    //             this.realX += 3;
-    //         }
-    //         if(e.key == "o"){
-    //             this.realX -= 3;
-    //         }
-    //     })
-    // }
-        
     
     public draw():void{
 
