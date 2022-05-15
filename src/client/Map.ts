@@ -7,6 +7,7 @@ import Player from "./layers/Player"
 import Interaction from "./layers/Interaction"
 import { Socket } from "socket.io-client"
 import OtherPlayer from "./layers/OtherPlayer"
+import OtherPlayersLayer from "./layers/OtherPlayersLayer"
 
 
 
@@ -40,8 +41,10 @@ export default class Map{
     private collisions:Array<Collision> = []
     private interactions:Array<Interaction> = []
     private socket:Socket
-    private otherPlayer:OtherPlayer
-    private playersCords:Array<Array<number>> = [[464, 464], [320, 256]]
+    private otherPlayersLayer:OtherPlayersLayer
+    //private otherPlayer:OtherPlayer
+    private activePlayersId:Array<number> = [0, 1]
+    private playersCords:Array<Array<number>> = [[464, 464], [320, 256]] // NOTE must be stored in db in key-value pair
 
     constructor(_ctx:CanvasRenderingContext2D, _id:number, _atlas:Atlas, _bgLayerBlockId:number, _objs:Array<MapObject>, _collisions:Array<ColliderObject>, _interactions:Array<InteractionObject>, _socket:Socket){
         this.ctx = _ctx
@@ -51,22 +54,17 @@ export default class Map{
  
         this.objectLayer = new ObjectLayer(_ctx, _atlas, this.createGrid(_objs))
 
+        this.objectLayer.loadObjects() // loading objects which are stored in grid
+
+        this.socket = _socket // reference to socket
         
+        this.otherPlayersLayer = this.createOtherPlayersLayer() // creating other players layer
+
         
-
-        this.objectLayer.loadObjects()
-
-        this.socket = _socket
-        //console.log(this.socket)
-
-
-        this.otherPlayer = this.createOtherPlayers()
 
         this.localPlayer = this.createPlayer()
         this.addCollision(_collisions)
         this.addInteractions(_interactions)
-        //console.log(this.localPlayer.interactions[0])
-
     
         
     }
@@ -101,6 +99,8 @@ export default class Map{
         const player1 = new Player(this.ctx, x, y, this)
         // const player1 = new Player(this.ctx, 480-(32/2), 480-(32/2), this)
 
+        //this.objectLayer.colMoveX(x - 464)
+
         const playerImg:HTMLImageElement = new Image();
         playerImg.src = process.env.ASSETS_URL + 'spritesheets/player_spritesheet' + window.userId + '.png';    
 
@@ -112,35 +112,26 @@ export default class Map{
         
     }
 
-    private createOtherPlayers():OtherPlayer{
+    private createOtherPlayersLayer():OtherPlayersLayer{
 
-        const id:number = window.otherUserId as number
-
-        const x = this.playersCords[id][0]
-        const y = this.playersCords[id][1]
-
-        // const cords:Array<number> = [playerCords[], playerCords] 
+        const otherPlayersLayer = new OtherPlayersLayer(this.ctx, this.socket)
 
 
-        // trzeba stworzyc warstwe nowych playerow
-        const otherPlayer = new OtherPlayer(this.objectLayer.getCtx(), x, y, this)
-
-        const playerImg:HTMLImageElement = new Image();
-        playerImg.src = process.env.ASSETS_URL + 'spritesheets/player_spritesheet' + id+ '.png';    
-
-        playerImg.onload = () => {
-            this.otherPlayer.loadSpritesheet(playerImg)
+       
+        for (let i = 0; i < this.activePlayersId.length; i++) {
+            const id = this.activePlayersId[i]
+            if(this.activePlayersId[i] != window.userId) otherPlayersLayer.createPlayer(id, this.playersCords[id])
+            
         }
 
-        return otherPlayer
-    }
+        return otherPlayersLayer
 
+    }
 
     public updateLayersPosition(mvUp:boolean, mvDown:boolean, mvRight:boolean, mvLeft:boolean):void{
         this.backgroundLayer.updatePosition(mvUp, mvDown, mvRight, mvLeft)
         this.objectLayer.updatePosition(mvUp, mvDown, mvRight, mvLeft)
-        // megaTemp
-        //this.otherPlayer.update();
+        this.otherPlayersLayer.updatePosition(mvUp, mvDown, mvRight, mvLeft)
     }
 
     public getColliders():Array<Collision>{
@@ -155,25 +146,28 @@ export default class Map{
         return this.socket
     }
 
-    public getOtherPlayer():OtherPlayer{
-        return this.otherPlayer
+    public getOtherPlayersLayer():OtherPlayersLayer{
+        return this.otherPlayersLayer
     }
 
     public draw(){
         this.backgroundLayer.draw()
         this.objectLayer.draw()
-        this.otherPlayer.draw()
+        // this.otherPlayer.draw() // to remove soon
+        this.otherPlayersLayer.draw()
         this.localPlayer.draw()
     }
 
     public colMoveX(_speedX:number){
         this.localPlayer.colMoveX(_speedX)
+        this.otherPlayersLayer.colMoveX(_speedX)
         this.backgroundLayer.colMoveX(_speedX)
         this.objectLayer.colMoveX(_speedX)    
     }
 
     public colMoveY(_speedY:number){
         this.localPlayer.colMoveY(_speedY)
+        this.otherPlayersLayer.colMoveY(_speedY)
         this.backgroundLayer.colMoveY(_speedY)
         this.objectLayer.colMoveY(_speedY)    
     }

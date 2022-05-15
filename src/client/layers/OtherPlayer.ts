@@ -1,53 +1,35 @@
-import Map from "../Map";
-import Collision from "./Collision";
-import Interaction from "./Interaction";
-import TextureLayer from "./TextureLayer";
-import { io, Socket } from "socket.io-client";
+export default class OtherPlayer {
 
-
-export default class OtherPlayer extends TextureLayer{
+    private layerCtx:CanvasRenderingContext2D
 
     private realX:number
     private realY:number
 
 
-    mvUp:boolean
-    mvDown:boolean
-    mvRight:boolean
-    mvLeft:boolean
+    private mvUp:boolean
+    private mvDown:boolean
+    private mvRight:boolean
+    private mvLeft:boolean
   
-    speedX:number = 3
-    speedY: number = 3
+    private speedX:number = 3
+    private speedY: number = 3
    
-    map:Map
-   
-    socket:Socket
-    //deltaXBlocks:number = 0
-    //deltaYBlocks:number = 0
-    
-    prevY = 0
 
+    private destX:number = 0
+    private destY:number = 0
 
-    destX:number = 0
-    destY:number = 0
-    ready:boolean = false;
-    moveDone:boolean = false;
-
-    movedX:number = 0
-    movedY:number = 0
-
-    directionX:string = 'none'
-    directionY:string = 'none'
+    private directionX:string = 'none'
+    private directionY:string = 'none'
     
 
-    spriteSize:number = 32
-    sprite:HTMLImageElement = new Image()
-    sx:number = 0
-    sy:number = 0
+    private spriteSize:number = 32
+    private sprite:HTMLImageElement = new Image()
+    private sx:number = 0
+    private sy:number = 0
+    
 
-    constructor(_domCtx: CanvasRenderingContext2D, _realX:number, _realY:number, _map:Map){
-        super(_domCtx)
-
+    constructor(_layerCtx: CanvasRenderingContext2D, _realX:number, _realY:number){
+        this.layerCtx = _layerCtx
         this.realX = Math.floor(_realX/1.5)
         this.realY = Math.floor(_realY/1.5)
 
@@ -55,17 +37,6 @@ export default class OtherPlayer extends TextureLayer{
         this.mvDown = false
         this.mvRight = false
         this.mvLeft = false
-
-        this.map = _map
-        this.socket = _map.getSocket()
-
-        //this.initControls()
-
-        //console.log(this.socket)
-
-        // this.dataFromSocket()
-
-        this.dataFromSocket()
     }
 
 
@@ -79,42 +50,17 @@ export default class OtherPlayer extends TextureLayer{
         return this.realY
     }
 
-    public override colMoveX(_speedX: number): void {
-        this.realX += _speedX
-    }
-
-    public override colMoveY(_speedY: number): void {
-        this.realY += _speedY
-    }
-
     public loadSpritesheet(_sprite:HTMLImageElement){
         this.sprite = _sprite
     }
 
 
 
-    private dataFromSocket(){
-        this.socket.on("moveOther", data => {
-            //console.log(data)
-
-            // console.log(data)
-
-            // console.log(data)
-
-            if(data.id == window.otherUserId){
-
-                //const deltaXBlocks:number = Math.round( (this.realX - data.x) / 32 ) 
-                //const deltaYBlocks:number = Math.round( (this.realY - data.y) / 32 )
+    public dataFromSocket(data:any){
 
                 this.destX = data.x
                 this.destY = data.y
             
-
-
-                //console.log(data.x ,data.y)
-                //console.log(this.realX, this.realY)
-
-
                 if(data.y == 0) this.directionY = 'none'
                 if(data.x == 0) this.directionX = 'none'
 
@@ -124,10 +70,6 @@ export default class OtherPlayer extends TextureLayer{
                 if(data.x > this.realX) this.directionX = 'right'
                 if(data.x < this.realX) this.directionX = 'left'
 
-                // console.log(this.direction)
-
-            }
-        })
     }
 
     private animate(_frames: number, deltaX: number, deltaY:number ):void{
@@ -164,10 +106,6 @@ export default class OtherPlayer extends TextureLayer{
 
 
     public update(_frames:number):void{
-
-        // NOTE
-        // animacja sie nie przerywa cos trzeba na to poradzic? np jak delta = 0 no to siema
-        // nwm cos sie psuje jeszcze
   
         const deltaYBlocks:number = this.realY - this.destY
         const deltaXBlocks:number = this.destX - this.realX
@@ -219,15 +157,15 @@ export default class OtherPlayer extends TextureLayer{
     
     public draw():void{
 
-        this.domCtx.drawImage(this.sprite,
+        this.layerCtx.drawImage(this.sprite,
             this.sx,
             this.sy,
-            this.blockSize, 
-            this.blockSize, 
+            this.spriteSize, 
+            this.spriteSize, 
             this.realX, 
             this.realY, 
-            this.blockSize, 
-            this.blockSize)
+            this.spriteSize, 
+            this.spriteSize)
 
     }
 

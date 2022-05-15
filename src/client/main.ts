@@ -88,12 +88,14 @@ document.addEventListener("changeMap", (e) => {
 atlasImg.onload = () => {
     mainAtlas = new Atlas(256, 256, atlasImg, 32)
 
+    const playersOnMap:Array<Number> = [0, 1]
+
     const map1 = new Map(ctx, 1, mainAtlas, map1Data.backgroundLayerBlockId, map1Data.objList, map1Data.colliders, map1Data.interactions, socket)
     const chat1 = new Chat//(false)
     const ui = new UI(ctx, map1, chat1)
 
     game.addToDraw([map1, ui])
-    game.addToUpdate([ui, map1.getOtherPlayer()])
+    game.addToUpdate([ui, map1.getOtherPlayersLayer()]) // otherPlayers
     game.addToUpdatePlayer([map1.getLocalPlayer()])
 
     game.startAnimating()
