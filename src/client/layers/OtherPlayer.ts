@@ -30,8 +30,8 @@ export default class OtherPlayer {
 
     constructor(_layerCtx: CanvasRenderingContext2D, _realX:number, _realY:number){
         this.layerCtx = _layerCtx
-        this.realX = Math.floor(_realX/1.5)
-        this.realY = Math.floor(_realY/1.5)
+        this.realX = Math.floor(_realX/1.5) 
+        this.realY = Math.floor(_realY/1.5) 
 
         this.mvUp = false
         this.mvDown = false

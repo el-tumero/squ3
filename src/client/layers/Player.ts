@@ -36,10 +36,13 @@ export default class Player extends TextureLayer{
     sx:number = 0
     sy:number = 0
 
+
     constructor(_domCtx: CanvasRenderingContext2D, _x:number, _y:number, _map:Map){
         super(_domCtx)
-        this.x = Math.floor(_x/1.5)
-        this.y = Math.floor(_y/1.5)
+        //this.x = Math.floor(_x/1.5)
+        //this.y = Math.floor(_y/1.5)
+        this.x = 480/1.5
+        this.y = 480/1.5
         this.realX = Math.floor(_x/1.5)
         this.realY = Math.floor(_y/1.5)
         this.centerX = this.realX+16
@@ -54,6 +57,8 @@ export default class Player extends TextureLayer{
 
         this.interactions = _map.getInteractions()
         this.colliders = _map.getColliders()
+
+        console.log(this.realX, this.realY)
 
         // this.dataFromSocket()
     }

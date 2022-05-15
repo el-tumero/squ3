@@ -28,6 +28,10 @@ export default class TextureLayer {
         return this.speed
     }
 
+    public getCords():void{
+        console.log(this.x, this.y)
+    }
+
     public colMoveX(_speedX:number){
         this.x -= _speedX
     }

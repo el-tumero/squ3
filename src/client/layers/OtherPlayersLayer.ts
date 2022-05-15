@@ -15,6 +15,8 @@ export default class OtherPlayersLayer extends TextureLayer{
     constructor(_domCtx: CanvasRenderingContext2D, _socket: Socket){
         super(_domCtx)
         this.socket = _socket
+        this.canvas.width = 1920
+        this.canvas.height = 1920
         this.movePlayers()
     }
 

@@ -44,7 +44,10 @@ export default class Map{
     private otherPlayersLayer:OtherPlayersLayer
     //private otherPlayer:OtherPlayer
     private activePlayersId:Array<number> = [0, 1]
-    private playersCords:Array<Array<number>> = [[464, 464], [320, 256]] // NOTE must be stored in db in key-value pair
+    // otherplayers + 16
+    private playersCords:Array<Array<number>> = [[480, 480], [432, 336]] // NOTE must be stored in db in key-value pair
+    // NOTE ONE BLOCK = 48
+    // BECAUSE OF SCALE x1.5
 
     constructor(_ctx:CanvasRenderingContext2D, _id:number, _atlas:Atlas, _bgLayerBlockId:number, _objs:Array<MapObject>, _collisions:Array<ColliderObject>, _interactions:Array<InteractionObject>, _socket:Socket){
         this.ctx = _ctx
@@ -93,13 +96,18 @@ export default class Map{
 
         const id:number = window.userId as number
 
-        const x:number = this.playersCords[id][0]
+        const x:number = this.playersCords[id][0] 
         const y:number = this.playersCords[id][1]
 
         const player1 = new Player(this.ctx, x, y, this)
-        // const player1 = new Player(this.ctx, 480-(32/2), 480-(32/2), this)
 
-        //this.objectLayer.colMoveX(x - 464)
+
+        this.applyOffset(-(480-x)/1.5, -(480-y)/1.5) //omg this is epic
+
+        this.objectLayer.getCords()
+        this.backgroundLayer.getCords()
+        this.otherPlayersLayer.getCords()
+        
 
         const playerImg:HTMLImageElement = new Image();
         playerImg.src = process.env.ASSETS_URL + 'spritesheets/player_spritesheet' + window.userId + '.png';    
@@ -110,6 +118,16 @@ export default class Map{
        
         return player1
         
+    }
+
+    private applyOffset(_x:number, _y:number):void{
+        this.otherPlayersLayer.colMoveX(_x)
+        this.backgroundLayer.colMoveX(_x)
+        this.objectLayer.colMoveX(_x)  
+
+        this.otherPlayersLayer.colMoveY(_y)
+        this.backgroundLayer.colMoveY(_y)
+        this.objectLayer.colMoveY(_y)  
     }
 
     private createOtherPlayersLayer():OtherPlayersLayer{
