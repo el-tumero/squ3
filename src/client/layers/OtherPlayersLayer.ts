@@ -1,39 +1,34 @@
 import TextureLayer from "./TextureLayer";
 import OtherPlayer from "./OtherPlayer";
-import { Socket } from "socket.io-client";
 
-interface PlayersId {
+interface ActivePlayers {
     [key: number]: OtherPlayer
 }
 
 export default class OtherPlayersLayer extends TextureLayer{
 
-    private socket:Socket
 
-    private activePlayers:PlayersId = {}
+    private activePlayers:ActivePlayers = {}
 
-    constructor(_domCtx: CanvasRenderingContext2D, _socket: Socket){
+    constructor(_domCtx: CanvasRenderingContext2D){
         super(_domCtx)
-        this.socket = _socket
         this.canvas.width = 1920
         this.canvas.height = 1920
-        this.movePlayers()
     }
 
-
-    private movePlayers():void{
-        this.socket.on("moveOther", data => {
-            if(data.id !== window.userId){
-                this.activePlayers[data.id].dataFromSocket(data)
-            }
-        })
+    public movePlayer(data:any):void{ 
+        this.activePlayers[data.id].dataFromSocket(data)    
     }
 
+    public deletePlayer(_id:number):void{
+        delete this.activePlayers[_id]
+        console.log(this.activePlayers)
+    }
 
-    public createPlayer(_id:number, _cords:Array<number>){
+    public createPlayer(_id:number, _cords:Array<number>):void{
         //console.log(_id, _cords)
         
-        const otherPlayer = new OtherPlayer(this.ctx, _cords[0], _cords[1])
+        const otherPlayer = new OtherPlayer(this.ctx, _cords[1], _cords[2])
         this.activePlayers[_id] = otherPlayer
 
         const playerImg:HTMLImageElement = new Image();

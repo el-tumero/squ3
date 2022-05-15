@@ -17,6 +17,10 @@ declare global {
 }
 // TO TEŻ MOCNO NA SZYBKO
 
+interface PlayersCords {
+    [id: number]: Array<number>
+}
+
 
 var socket = io(process.env.SOCKET_URL!)
 
@@ -57,14 +61,28 @@ if(userId == '1'){
 
 
 
-document.addEventListener("changeMap", (e) => {
-    //console.log()
+document.addEventListener("changeMap", async (e) => {
 
+    
+
+    //console.log()
+    const oldId:number = (<any>e).detail.from as number
     const id:number = (<any>e).detail.to as number
     const mapData = mapsData[id -1]
-    //console.log("MAP CHANGE!")
 
-    const nMap = new Map(ctx, id, mainAtlas, mapData.backgroundLayerBlockId, mapData.objList, mapData.colliders, mapData.interactions, socket)
+    socket.emit("changeMap", { from: oldId, to: id, who: userId })
+
+    //console.log(id)
+    //console.log("MAP CHANGE!")
+    //const realId:number = id - 1
+
+    const response = await fetch('http://localhost:3000/mapdata?id='+ id)
+    const playersOnMap = await response.json()
+
+
+    const nMap = new Map(ctx, id, mainAtlas, mapData.backgroundLayerBlockId, mapData.objList, mapData.colliders, mapData.interactions, socket, playersOnMap)
+
+    
 
     document.addEventListener("openDoor", (e) => {
         console.log('door opened')
@@ -78,19 +96,23 @@ document.addEventListener("changeMap", (e) => {
     const ui = new UI(ctx, nMap, nChat)
 
     game.addToDraw([nMap, ui])
-    game.addToUpdate([ui]) //dodac update innych graczy
+    game.addToUpdate([ui, nMap.getOtherPlayersLayer()]) //dodac update innych graczy
     game.addToUpdatePlayer([nMap.getLocalPlayer()])
 
 
 })
 
 
-atlasImg.onload = () => {
+atlasImg.onload = async () => {
+
     mainAtlas = new Atlas(256, 256, atlasImg, 32)
 
-    const playersOnMap:Array<Number> = [0, 1]
+    const response = await fetch('http://localhost:3000/mapdata?id=1')
+    const playersOnMap = await response.json()
+    // console.log(json)
+    //as PlayersCords
 
-    const map1 = new Map(ctx, 1, mainAtlas, map1Data.backgroundLayerBlockId, map1Data.objList, map1Data.colliders, map1Data.interactions, socket)
+    const map1 = new Map(ctx, 1, mainAtlas, map1Data.backgroundLayerBlockId, map1Data.objList, map1Data.colliders, map1Data.interactions, socket, playersOnMap)
     const chat1 = new Chat//(false)
     const ui = new UI(ctx, map1, chat1)
 

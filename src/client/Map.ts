@@ -30,6 +30,10 @@ type InteractionObject = {
     type:string
 }
 
+interface PlayersCords {
+    [id: number]: Array<number>
+}
+
 
 export default class Map{
     private id:number
@@ -43,15 +47,18 @@ export default class Map{
     private socket:Socket
     private otherPlayersLayer:OtherPlayersLayer
     //private otherPlayer:OtherPlayer
-    private activePlayersId:Array<number> = [0, 1]
-    // otherplayers + 16
-    private playersCords:Array<Array<number>> = [[480, 480], [432, 336]] // NOTE must be stored in db in key-value pair
-    // NOTE ONE BLOCK = 48
+    //private activePlayersId:Array<number> = [0, 1]
+    //private playersCords:Array<Array<number>> = [[480, 480], [432, 336]] // NOTE must be stored in db in key-value pair
+    private playersCords:PlayersCords = {}
+    // NOTE
+    // ONE BLOCK = 48
     // BECAUSE OF SCALE x1.5
 
-    constructor(_ctx:CanvasRenderingContext2D, _id:number, _atlas:Atlas, _bgLayerBlockId:number, _objs:Array<MapObject>, _collisions:Array<ColliderObject>, _interactions:Array<InteractionObject>, _socket:Socket){
+    constructor(_ctx:CanvasRenderingContext2D, _id:number, _atlas:Atlas, _bgLayerBlockId:number, _objs:Array<MapObject>, _collisions:Array<ColliderObject>, _interactions:Array<InteractionObject>, _socket:Socket, _playersCords:PlayersCords){
         this.ctx = _ctx
         this.id = _id
+
+        this.playersCords = _playersCords
         
         this.backgroundLayer = new BackgroundLayer(_ctx, _atlas, _bgLayerBlockId)
  
@@ -63,11 +70,14 @@ export default class Map{
         
         this.otherPlayersLayer = this.createOtherPlayersLayer() // creating other players layer
 
-        
+        //console.log(_playersCords)
 
         this.localPlayer = this.createPlayer()
         this.addCollision(_collisions)
         this.addInteractions(_interactions)
+
+        this.updateOtherPlayersPositions()
+        this.updateOtherPlayersPresenece()
     
         
     }
@@ -96,18 +106,13 @@ export default class Map{
 
         const id:number = window.userId as number
 
-        const x:number = this.playersCords[id][0] 
-        const y:number = this.playersCords[id][1]
+        const x:number = this.playersCords[id][1] 
+        const y:number = this.playersCords[id][2]
 
         const player1 = new Player(this.ctx, x, y, this)
 
 
         this.applyOffset(-(480-x)/1.5, -(480-y)/1.5) //omg this is epic
-
-        this.objectLayer.getCords()
-        this.backgroundLayer.getCords()
-        this.otherPlayersLayer.getCords()
-        
 
         const playerImg:HTMLImageElement = new Image();
         playerImg.src = process.env.ASSETS_URL + 'spritesheets/player_spritesheet' + window.userId + '.png';    
@@ -132,18 +137,53 @@ export default class Map{
 
     private createOtherPlayersLayer():OtherPlayersLayer{
 
-        const otherPlayersLayer = new OtherPlayersLayer(this.ctx, this.socket)
+        const otherPlayersLayer = new OtherPlayersLayer(this.ctx)
 
-
+        const ids = Object.keys(this.playersCords)
        
-        for (let i = 0; i < this.activePlayersId.length; i++) {
-            const id = this.activePlayersId[i]
-            if(this.activePlayersId[i] != window.userId) otherPlayersLayer.createPlayer(id, this.playersCords[id])
+        for (let i = 0; i < ids.length; i++) {
+            const id = ids[i] as unknown
+            if(ids[i] != window.userId) otherPlayersLayer.createPlayer(id as number, this.playersCords[id as number])
             
         }
 
         return otherPlayersLayer
 
+    }
+
+    private updateOtherPlayersPositions():void{
+        this.socket.on("map" + this.id + "recv", data => {
+            if(data.id !== window.userId){
+                this.otherPlayersLayer.movePlayer(data)
+            }
+        })
+    }
+
+    private updateOtherPlayersPresenece():void{
+        this.socket.on("changeMap", async(data) => {
+
+            console.log(data)
+            if(data.who !== window.userId){
+                if(data.from == this.id){
+                    this.otherPlayersLayer.deletePlayer(data.who)
+                    delete this.playersCords[data.who]
+                }
+
+                if(data.to == this.id){
+                    console.log('not returned ;(')
+                        const response = await fetch('http://localhost:3000/mapdata?id='+ this.id)
+                        const playersOnMap = await response.json()
+                        this.playersCords[data.who] = playersOnMap[data.who]
+                        console.log(playersOnMap[data.who])
+                    this.otherPlayersLayer.createPlayer(data.who, this.playersCords[data.who])
+                    
+                }
+
+            }
+
+            
+
+        })
     }
 
     public updateLayersPosition(mvUp:boolean, mvDown:boolean, mvRight:boolean, mvLeft:boolean):void{

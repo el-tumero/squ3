@@ -58,9 +58,7 @@ export default class Player extends TextureLayer{
         this.interactions = _map.getInteractions()
         this.colliders = _map.getColliders()
 
-        console.log(this.realX, this.realY)
-
-        // this.dataFromSocket()
+        // console.log(this.realX, this.realY)
     }
 
 
@@ -133,22 +131,6 @@ export default class Player extends TextureLayer{
         this.sprite = _sprite
     }
 
-    private dataFromSocket(){
-        this.socket.on("moveOther", data => {
-            //console.log(data)
-
-            this.destX = data.x
-            this.destY = data.y
-
-            this.deltaX = this.realX - data.x
-            this.deltaY = this.realY - data.y
-
-            this.ready = true
-
-            console.log(this.deltaX, this.deltaY)
-        })
-    }
-
     public updatePositionInLayers(_frames: number):void{
         
         if(this.mvUp){
@@ -176,8 +158,8 @@ export default class Player extends TextureLayer{
         
 
         if(_frames == 0 || _frames == 15 || _frames == 30 || _frames == 45){
-            this.socket.emit('position', {id: window.userId, x: this.realX, y: this.realY})
-            // id 
+            this.socket.emit('map' + this.map.getId() + "send", {id: window.userId, x: this.realX, y: this.realY})
+            // id mapki
         }
         
         

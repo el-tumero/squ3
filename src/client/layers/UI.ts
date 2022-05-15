@@ -64,7 +64,7 @@ export default class UI extends TextureLayer {
                     
                     if(this.intrRef.getInfo().includes("portal")){
                         let mapId:number = Number(this.intrRef.getInfo()[6])
-                        const mapChangeEvent:CustomEvent = new CustomEvent('changeMap', {detail: {to: mapId} });
+                        const mapChangeEvent:CustomEvent = new CustomEvent('changeMap', {detail: {from:this.mapRef.getId(), to: mapId} });
                         document.dispatchEvent(mapChangeEvent)
                     }
                 }
