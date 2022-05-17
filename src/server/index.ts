@@ -51,6 +51,8 @@ app.get('/mapdata', (req:Request, res:Response) => {
 
 app.use('/assets', express.static(path.join(process.cwd(), 'assets')))
 
+let map1cache:any = []
+
 io.on("connection", socket => {
     console.log("Connected!")
 
@@ -60,8 +62,21 @@ io.on("connection", socket => {
     })
 
     socket.on("map1send", data => {
-        io.emit("map1recv", data)
+        map1cache.push(data)
+        //io.emit("map1recv", data)
     })
+
+    // server-side validation -> trzeba zrobić!!
+
+    setInterval(() => {
+        map1cache.forEach((data: any) => {
+            io.emit("map1recv", data)
+        }); 
+        
+        map1cache = []
+        
+        // trzeba stworzyć typ do data
+    }, 100)
 
     socket.on("map2send", data => {
         io.emit("map2recv", data)

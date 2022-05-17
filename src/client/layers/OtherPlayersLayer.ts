@@ -17,12 +17,12 @@ export default class OtherPlayersLayer extends TextureLayer{
     }
 
     public movePlayer(data:any):void{ 
+        if(this.activePlayers[data.id] == null) return
         this.activePlayers[data.id].dataFromSocket(data)    
     }
 
     public deletePlayer(_id:number):void{
         delete this.activePlayers[_id]
-        console.log(this.activePlayers)
     }
 
     public createPlayer(_id:number, _cords:Array<number>):void{

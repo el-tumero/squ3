@@ -58,17 +58,19 @@ export default class OtherPlayer {
 
     public dataFromSocket(data:any){
 
-                this.destX = data.x
-                this.destY = data.y
-            
-                if(data.y == 0) this.directionY = 'none'
-                if(data.x == 0) this.directionX = 'none'
+        if(typeof data !== undefined){
+            this.destX = data.x
+        this.destY = data.y
+    
+        if(data.y == 0) this.directionY = 'none'
+        if(data.x == 0) this.directionX = 'none'
+        if(data.y < this.realY) this.directionY = 'up'
+        if(data.y > this.realY) this.directionY = 'down'
+        if(data.x > this.realX) this.directionX = 'right'
+        if(data.x < this.realX) this.directionX = 'left'
+        }
 
-                if(data.y < this.realY) this.directionY = 'up'
-                if(data.y > this.realY) this.directionY = 'down'
-
-                if(data.x > this.realX) this.directionX = 'right'
-                if(data.x < this.realX) this.directionX = 'left'
+                
 
     }
 
