@@ -171,7 +171,7 @@ export default class Map{
 
                 if(data.to == this.id){
                     // console.log('not returned ;(')
-                        const response = await fetch('http://localhost:3000/mapdata?id='+ this.id)
+                        const response = await fetch(process.env.GENERAL_URL + 'mapdata?id='+ this.id)
                         const playersOnMap = await response.json()
                         this.playersCords[data.who] = playersOnMap[data.who]
                         console.log(playersOnMap[data.who])

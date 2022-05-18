@@ -47,6 +47,8 @@ const mapsData:Array<any> = [map1Data, map2Data, map3Data]
 const urlParams = new URLSearchParams(window.location.search)
 const userId = urlParams.get('user');
 
+console.log(process.env.ASSETS_URL)
+
 window.userId = userId
 // console.log(userId)
 
@@ -76,7 +78,7 @@ document.addEventListener("changeMap", async (e) => {
     //console.log("MAP CHANGE!")
     //const realId:number = id - 1
 
-    const response = await fetch('http://localhost:3000/mapdata?id='+ id)
+    const response = await fetch(process.env.GENERAL_URL + 'mapdata?id='+ id)
     const playersOnMap = await response.json()
 
 
@@ -107,18 +109,25 @@ atlasImg.onload = async () => {
 
     mainAtlas = new Atlas(256, 256, atlasImg, 32)
 
-    const response = await fetch('http://localhost:3000/mapdata?id=1')
-    const playersOnMap = await response.json()
+    const playerResponse = await fetch(process.env.GENERAL_URL+ 'player?id=' + window.userId)
+    const localPlayerData = await playerResponse.json()
+
+    
+
+    const mapResponse = await fetch(process.env.GENERAL_URL+ 'mapdata?id=' + localPlayerData.map)
+    const playersOnMap = await mapResponse.json()
     // console.log(json)
     //as PlayersCords
 
-    const map1 = new Map(ctx, 1, mainAtlas, map1Data.backgroundLayerBlockId, map1Data.objList, map1Data.colliders, map1Data.interactions, socket, playersOnMap)
-    const chat1 = new Chat//(false)
-    const ui = new UI(ctx, map1, chat1)
+    const mapData = mapsData[localPlayerData.map - 1]  
 
-    game.addToDraw([map1, ui])
-    game.addToUpdate([ui, map1.getOtherPlayersLayer()]) // otherPlayers
-    game.addToUpdatePlayer([map1.getLocalPlayer()])
+    const map = new Map(ctx, localPlayerData.map, mainAtlas, mapData.backgroundLayerBlockId, mapData.objList, mapData.colliders, mapData.interactions, socket, playersOnMap)
+    const chat = new Chat//(false)
+    const ui = new UI(ctx, map, chat)
+
+    game.addToDraw([map, ui])
+    game.addToUpdate([ui, map.getOtherPlayersLayer()]) // otherPlayers
+    game.addToUpdatePlayer([map.getLocalPlayer()])
 
     game.startAnimating()
 

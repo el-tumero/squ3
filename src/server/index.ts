@@ -38,6 +38,11 @@ app.get('/', (req:Request, res:Response) => {
     res.send('Test')
 })
 
+app.get('/player', (req:Request, res:Response) => {
+    const id:number = Number(req.query.id)
+    res.json({"map": playersDb[id][0]})
+})
+
 app.get('/mapdata', (req:Request, res:Response) => {
     const id = req.query.id
     const playerDbFormated = Object.entries(playersDb)
