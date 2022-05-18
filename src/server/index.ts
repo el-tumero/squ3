@@ -12,6 +12,17 @@ interface Database{
     [playerId: number]: Array<number>
 }
 
+interface ActivePlayers{
+    [playerId: string]: boolean
+}
+
+type InputFromPlayer = {
+    id:number
+    x:number
+    y:number
+
+}
+
 const io = new Server(server, {
     cors: {
         origin: '*'
@@ -25,6 +36,9 @@ const playersDb:Database = {
     1: [1, 432, 336]
 }
 
+const connectedPlayers:ActivePlayers = {} // i need to do connected players per map ;)
+
+const NUMBER_OF_MAPS = 3
 
 
 // console.log(Object.entries(playersDb))
@@ -56,38 +70,79 @@ app.get('/mapdata', (req:Request, res:Response) => {
 
 app.use('/assets', express.static(path.join(process.cwd(), 'assets')))
 
-let map1cache:any = []
+
+const mapsCache:Array<Array<InputFromPlayer>> = [[], [], [], [], []]
+
+
+
+// console.log(mapsCache[1])
+
+for (let i = 1; i < NUMBER_OF_MAPS + 1; i++) {
+    setTimeout(() => {
+        setInterval(() => {
+            mapsCache[i].forEach((data: InputFromPlayer) => {
+                io.emit("map" + i + "recv", data)
+            }); 
+            
+
+            mapsCache[i] = []
+            
+        }, 250)
+    }, 50*i)
+}
+
+
+
+
 
 io.on("connection", socket => {
-    console.log("Connected!")
+
+    const playerId:string = socket.handshake.query.id as string
+
+    const playerIdNum:number = Number(playerId)
+
+    console.log("player " + playerId +" connected!")
+
+    connectedPlayers[playerId] = true
 
     socket.on("changeMap", data => {
         playersDb[data.who][0] = data.to
         io.emit("changeMap", data)
     })
 
-    socket.on("map1send", data => {
-        map1cache.push(data)
-        //io.emit("map1recv", data)
+    socket.on("disconnect", reason => {
+        console.log("player " + playerId +" disconnected!")
+        delete connectedPlayers[playerId]
     })
 
-    // server-side validation -> trzeba zrobić!!
 
-    setInterval(() => {
-        map1cache.forEach((data: any) => {
-            io.emit("map1recv", data)
-        }); 
-        
-        map1cache = []
-        
-        // trzeba stworzyć typ do data
-    }, 100)
-
-    socket.on("map2send", data => {
-        io.emit("map2recv", data)
-    })
+    // NOTE!
+    // nie petla tylko najpierw sprawdzane jest gdzie user jest aby bardziej zoptymalizowac
+    for (let i = 1; i < NUMBER_OF_MAPS + 1; i++) {
+        socket.on("map" + i + "send", (data:InputFromPlayer) => {
+            mapsCache[i].push(data)
+        })
+    }
 
     
+
+    // socket.on("map" + playersDb[playerIdNum][0] + "send", (data:InputFromPlayer) => {
+    //         mapsCache[playersDb[playerIdNum][0]].push(data)
+            // counter++;
+            // if(counter === 5){
+            //     playersDb[playerIdNum][1] = data.x
+            //     playersDb[playerIdNum][2] = data.y
+            //     console.log(playersDb[playerIdNum])
+            //     counter = 0
+            // }
+
+            
+    // })
+
+
+ 
+
+    // server-side validation -> trzeba zrobić!! JOI LIBRARY
 
 })
 

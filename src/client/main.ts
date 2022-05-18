@@ -21,8 +21,19 @@ interface PlayersCords {
     [id: number]: Array<number>
 }
 
+// INFO: na razie działa tylko usuwanie obiektów z warstwy obiektowej, nie znika kolizja, to jest do dodanie i do pomyslenia
 
-var socket = io(process.env.SOCKET_URL!)
+// VERY TEMPORARY (TO DELETE SOON GUYS) \/
+
+const urlParams = new URLSearchParams(window.location.search)
+const userId = urlParams.get('user');
+window.userId = userId
+
+var socket = io(process.env.SOCKET_URL!, {
+    query: {
+        id: userId
+    }
+})
 
 const canvas = document.getElementById('canvas') as HTMLCanvasElement;
 const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -40,16 +51,12 @@ let mainAtlas:Atlas;
 
 const mapsData:Array<any> = [map1Data, map2Data, map3Data]
 
-// INFO: na razie działa tylko usuwanie obiektów z warstwy obiektowej, nie znika kolizja, to jest do dodanie i do pomyslenia
 
-// VERY TEMPORARY (TO DELETE SOON GUYS) \/
 
-const urlParams = new URLSearchParams(window.location.search)
-const userId = urlParams.get('user');
 
-console.log(process.env.ASSETS_URL)
 
-window.userId = userId
+//console.log(process.env.ASSETS_URL)
+
 // console.log(userId)
 
 if(userId == '0'){
