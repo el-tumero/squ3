@@ -106,8 +106,10 @@ export default class Map{
 
         const id:number = window.userId as number
 
-        const x:number = this.playersCords[id][1] 
-        const y:number = this.playersCords[id][2]
+        const x:number = this.playersCords[id][1] * 1.5 // because of scale ;))
+        const y:number = this.playersCords[id][2] * 1.5
+        
+        console.log(x, y)
 
         const player1 = new Player(this.ctx, x, y, this)
 

@@ -28,7 +28,7 @@ export default class OtherPlayersLayer extends TextureLayer{
     public createPlayer(_id:number, _cords:Array<number>):void{
         //console.log(_id, _cords)
         
-        const otherPlayer = new OtherPlayer(this.ctx, _cords[1], _cords[2])
+        const otherPlayer = new OtherPlayer(this.ctx, _cords[1] * 1.5, _cords[2] * 1.5)
         this.activePlayers[_id] = otherPlayer
 
         const playerImg:HTMLImageElement = new Image();

@@ -123,7 +123,7 @@ atlasImg.onload = async () => {
 
     const mapResponse = await fetch(process.env.GENERAL_URL+ 'mapdata?id=' + localPlayerData.map)
     const playersOnMap = await mapResponse.json()
-    // console.log(json)
+    console.log(playersOnMap)
     //as PlayersCords
 
     const mapData = mapsData[localPlayerData.map - 1]  
