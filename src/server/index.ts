@@ -30,11 +30,16 @@ const io = new Server(server, {
 });
 
 
-
+// for hardcoded cords
 const playersDb:Database = {
     0: [1, 480, 480],
     1: [1, 432, 336]
 }
+
+Object.values(playersDb).forEach(playerData => {
+    playerData[1] = playerData[1] / 1.5
+    playerData[2] = playerData[2] / 1.5
+})
 
 const connectedPlayers:ActivePlayers = {} // i need to do connected players per map ;)
 
@@ -105,25 +110,57 @@ io.on("connection", socket => {
 
     connectedPlayers[playerId] = true
 
+    let location:InputFromPlayer = {id: -1, x: -1, y: -1};
+
     socket.on("changeMap", data => {
         playersDb[data.who][0] = data.to
         io.emit("changeMap", data)
+        sendMapListener(data.to)
     })
 
     socket.on("disconnect", reason => {
         console.log("player " + playerId +" disconnected!")
+        clearInterval(updatePositionInDBInterval)
+        connectedPlayers[playerId] = false
         delete connectedPlayers[playerId]
     })
 
 
     // NOTE!
     // nie petla tylko najpierw sprawdzane jest gdzie user jest aby bardziej zoptymalizowac
-    for (let i = 1; i < NUMBER_OF_MAPS + 1; i++) {
-        socket.on("map" + i + "send", (data:InputFromPlayer) => {
-            mapsCache[i].push(data)
-        })
+    // for (let i = 1; i < NUMBER_OF_MAPS + 1; i++) {
+    //     socket.on("map" + i + "send", (data:InputFromPlayer) => {
+    //         mapsCache[i].push(data)
+    //     })
+    // }
+
+
+    sendMapListener(playersDb[playerIdNum][0])
+
+
+    function sendMapListener(_mapId:number){
+        socket.on("map" + _mapId+ "send", (data:InputFromPlayer) => {
+            if(data.id == playerIdNum){
+                location = data
+                mapsCache[_mapId].push(data)
+            } 
+        })    
     }
 
+    
+
+    function updatePositionInDB(){
+        if(location.id != -1){
+        playersDb[playerIdNum][1] = location.x
+        playersDb[playerIdNum][2] = location.y
+        console.log(playersDb[playerIdNum])
+        }
+    }
+
+    const updatePositionInDBInterval = setInterval(updatePositionInDB, 1000)
+
+
+    
     
 
     // socket.on("map" + playersDb[playerIdNum][0] + "send", (data:InputFromPlayer) => {
