@@ -31,7 +31,7 @@ window.userId = userId
 
 var socket = io(process.env.SOCKET_URL!, {
     query: {
-        id: userId
+        id: userId 
     }
 })
 
@@ -101,7 +101,7 @@ document.addEventListener("changeMap", async (e) => {
         nMap.deleteObject(x, y)
         
     })
-    const nChat = new Chat//(false)
+    const nChat = new Chat(socket, id)//(false)
     const ui = new UI(ctx, nMap, nChat)
 
     game.addToDraw([nMap, ui])
@@ -129,7 +129,7 @@ atlasImg.onload = async () => {
     const mapData = mapsData[localPlayerData.map - 1]  
 
     const map = new Map(ctx, localPlayerData.map, mainAtlas, mapData.backgroundLayerBlockId, mapData.objList, mapData.colliders, mapData.interactions, socket, playersOnMap)
-    const chat = new Chat//(false)
+    const chat = new Chat(socket, localPlayerData.map)//(false)
     const ui = new UI(ctx, map, chat)
 
     game.addToDraw([map, ui])

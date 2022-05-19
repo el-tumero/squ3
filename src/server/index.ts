@@ -23,6 +23,11 @@ type InputFromPlayer = {
 
 }
 
+type Message = {
+    id:number
+    content:string
+}
+
 const io = new Server(server, {
     cors: {
         origin: '*'
@@ -59,6 +64,7 @@ app.get('/', (req:Request, res:Response) => {
 
 app.get('/player', (req:Request, res:Response) => {
     const id:number = Number(req.query.id)
+    if(isNaN(id)) return
     res.json({"map": playersDb[id][0]})
 })
 
@@ -100,9 +106,13 @@ for (let i = 1; i < NUMBER_OF_MAPS + 1; i++) {
 
 
 
+
+
 io.on("connection", socket => {
 
     const playerId:string = socket.handshake.query.id as string
+    if(playerId == 'null') return
+    // if(playerId.length == 0) return
 
     const playerIdNum:number = Number(playerId)
 
@@ -126,20 +136,19 @@ io.on("connection", socket => {
     })
 
 
-    // NOTE!
-    // nie petla tylko najpierw sprawdzane jest gdzie user jest aby bardziej zoptymalizowac
-    // for (let i = 1; i < NUMBER_OF_MAPS + 1; i++) {
-    //     socket.on("map" + i + "send", (data:InputFromPlayer) => {
-    //         mapsCache[i].push(data)
-    //     })
-    // }
-
-
     sendMapListener(playersDb[playerIdNum][0])
+    msgBroadcast(playersDb[playerIdNum][0])
 
+
+    function msgBroadcast(_mapId:number){
+        socket.on("map" + _mapId + "chat", (msg:Message) => {
+            io.emit("map" + _mapId + "chat", msg)
+        })
+    }
 
     function sendMapListener(_mapId:number){
         socket.on("map" + _mapId+ "send", (data:InputFromPlayer) => {
+            // console.log(_mapId)
             if(data.id == playerIdNum){
                 location = data
                 mapsCache[_mapId].push(data)
@@ -148,36 +157,15 @@ io.on("connection", socket => {
     }
 
     
-
     function updatePositionInDB(){
         if(location.id != -1){
         playersDb[playerIdNum][1] = location.x
         playersDb[playerIdNum][2] = location.y
-        console.log(playersDb[playerIdNum])
+        // console.log(playersDb[playerIdNum])
         }
     }
 
     const updatePositionInDBInterval = setInterval(updatePositionInDB, 1000)
-
-
-    
-    
-
-    // socket.on("map" + playersDb[playerIdNum][0] + "send", (data:InputFromPlayer) => {
-    //         mapsCache[playersDb[playerIdNum][0]].push(data)
-            // counter++;
-            // if(counter === 5){
-            //     playersDb[playerIdNum][1] = data.x
-            //     playersDb[playerIdNum][2] = data.y
-            //     console.log(playersDb[playerIdNum])
-            //     counter = 0
-            // }
-
-            
-    // })
-
-
- 
 
     // server-side validation -> trzeba zrobić!! JOI LIBRARY
 
