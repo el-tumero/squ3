@@ -3,7 +3,7 @@ const nodeExternals = require('webpack-node-externals')
 const Dotenv = require('dotenv-webpack')
 
 const clientConfig = {
-  entry: { main:'./src/client/main.ts' },
+  entry: { main:'./src/client/main.ts', auth:'./src/client/auth/auth.ts' },
   mode: 'development',
   module: {
     rules: [
