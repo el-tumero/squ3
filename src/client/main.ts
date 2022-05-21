@@ -6,7 +6,7 @@ import map1Data from "./mapsData/map1.json" // importuje dane mapy z pliku
 import map2Data from "./mapsData/map2.json"
 import map3Data from "./mapsData/map3.json"
 import Chat from "./layers/Chat";
-import {io} from "socket.io-client"
+import {io, Socket} from "socket.io-client"
 
 
 declare global {
@@ -21,25 +21,63 @@ interface PlayersCords {
     [id: number]: Array<number>
 }
 
+
+
+
+
+
 // INFO: na razie działa tylko usuwanie obiektów z warstwy obiektowej, nie znika kolizja, to jest do dodanie i do pomyslenia
 
 // VERY TEMPORARY (TO DELETE SOON GUYS) \/
 
-const urlParams = new URLSearchParams(window.location.search)
-const userId = urlParams.get('user');
-window.userId = userId
+// const urlParams = new URLSearchParams(window.location.search)
+// const userId = urlParams.get('user');
+// window.userId = userId
 
-var socket = io(process.env.SOCKET_URL!, {
-    query: {
-        id: userId 
+// ENTRY SETUP
+
+
+
+(async () => {
+    
+    await getUserId()
+    var socket =  await io(process.env.SOCKET_URL!, {
+        query: {
+            id: window.userId 
+        }
+    })
+
+    start(socket)
+
+
+})()
+
+
+async function getUserId():Promise<void>{
+    const resUserId = await fetch('/getId')
+    const resJson = await resUserId.json()
+    const userPublickey = resJson.message
+
+    if(userPublickey == '0xaDc35b0F0Eb14709cBCF28086C505EA976BF8c99'.toLocaleLowerCase()){
+        window.userId = 0
     }
-})
+    
+}
+
+
+
+
+
+
+// canvas 960x960
+
+
+
+function start(socket:Socket){
 
 const canvas = document.getElementById('canvas') as HTMLCanvasElement;
 const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
-// transform(a, b, c, d, e, f)
 ctx.scale(1.5,1.5)
-// canvas 960x960
 
 // loading texture atlas
 const atlasImg:HTMLImageElement = new Image();
@@ -48,27 +86,7 @@ atlasImg.src = process.env.ASSETS_URL + "atlas.png"
 const game = new GameLoop(60, ctx)
 let mainAtlas:Atlas;
 
-
 const mapsData:Array<any> = [map1Data, map2Data, map3Data]
-
-
-
-
-
-//console.log(process.env.ASSETS_URL)
-
-// console.log(userId)
-
-if(userId == '0'){
-    window.otherUserId = 1
-}
-
-if(userId == '1'){
-    window.otherUserId = 0
-}
-
-
-
 
 document.addEventListener("changeMap", async (e) => {
 
@@ -79,7 +97,7 @@ document.addEventListener("changeMap", async (e) => {
     const id:number = (<any>e).detail.to as number
     const mapData = mapsData[id -1]
 
-    socket.emit("changeMap", { from: oldId, to: id, who: userId })
+    socket.emit("changeMap", { from: oldId, to: id, who: window.userId })
 
     //console.log(id)
     //console.log("MAP CHANGE!")
@@ -139,4 +157,4 @@ atlasImg.onload = async () => {
     game.startAnimating()
 
 }
-
+}

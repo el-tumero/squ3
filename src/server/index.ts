@@ -5,11 +5,16 @@ import { Server } from 'socket.io'
 import cors from 'cors'
 import { SHA256 } from 'crypto-js'
 import Web3 from 'web3'
+import session, {Session, SessionData} from 'express-session'
+import {IncomingMessage} from 'http'
+// import connectToDb from './mongooseConfig'
+// import { Connection } from 'mongoose'
+import MongoStore from 'connect-mongo'
+import { Socket } from 'socket.io-client'
 
 
 const web3:Web3 = new Web3(Web3.givenProvider)
 web3.setProvider(new Web3.providers.HttpProvider('https://bscrpc.com'));
-
 
 const app:Express = express()
 const port:number = 3000
@@ -17,6 +22,10 @@ const server = http.createServer(app)
 
 interface Database{
     [playerId: number]: Array<number>
+}
+
+interface SessionStorage{
+    [playerId: string]: Session & Partial<SessionData>
 }
 
 interface ActivePlayers{
@@ -42,11 +51,35 @@ const io = new Server(server, {
 });
 
 
+// needs to migrate to DB
+
 // for hardcoded cords
 const playersDb:Database = {
     0: [1, 480, 480],
     1: [1, 432, 336]
 }
+
+//======= DECLARATIONS ======
+
+declare module 'express-session' {
+    export interface SessionData {
+      userId: string
+    }
+}
+
+declare module 'http' {
+    export interface IncomingMessage{
+        session: any
+    }
+}
+
+// declare module "sock" { 
+//     export interface  {
+//       session: any
+//     }
+//   }
+
+
 
 Object.values(playersDb).forEach(playerData => {
     playerData[1] = playerData[1] / 1.5
@@ -57,20 +90,48 @@ const connectedPlayers:ActivePlayers = {} // i need to do connected players per 
 
 const NUMBER_OF_MAPS = 3
 
+const oneDay = 86400000
 
 
-// console.log(Object.entries(playersDb))
-// function getKeyByValue(object:any, value:any) {
-//     return Object.keys(object).find(key => object[key][0] === value);
-//   }
+// SESSION STUFF
 
+// const connection:Connection = connectToDb()
 
+const sessionStore:MongoStore = MongoStore.create({
+    mongoUrl: 'mongodb://localhost:27017/squ3',
+    collectionName: 'sessions'
+})
+
+// EXPRESS MIDDLEWARE
 
 app.use(cors())
 app.use(express.json())
 
+
+//app.use(express.urlencoded({extended:true})) //destroys everything??
+
+const sessionMiddleware = session({
+    secret: "juras2",
+    saveUninitialized: true,
+    cookie: {maxAge: oneDay},
+    resave: false,
+    store: sessionStore
+})
+
+app.use(sessionMiddleware)
+
+app.use('/scripts', express.static(path.join(process.cwd(), 'dist/client/scripts')))
+app.use('/styles', express.static(path.join(process.cwd(), 'dist/client/styles')))
+app.use('/assets', express.static(path.join(process.cwd(), 'assets')))
+
+
+
 app.get('/', (req:Request, res:Response) => {
-    res.send('Test')
+    res.sendFile(path.join(process.cwd(), 'dist/client/tempauth.html'))
+})
+
+app.get('/game', (req:Request, res:Response) => {
+    res.sendFile(path.join(process.cwd(), 'dist/client/index.html'))
 })
 
 app.get('/player', (req:Request, res:Response) => {
@@ -86,20 +147,37 @@ app.get('/authphrase', (req:Request, res:Response) => {
     res.json({hashedPhrase})
 })
 
+app.get('/getid', (req:Request, res:Response) => {
+
+    if(req.session.userId){
+        res.json({message: req.session.userId })
+        return
+    }
+
+    res.json({message: "error" })
+
+})
+
 app.post('/auth', async (req:Request, res:Response) => {
 
     const singature:string = await req.body.signature
     const publicKey:string = await req.body.public_key
-
+    
     const issuerPublicKey = await web3.eth.accounts.recover(hashedPhrase, singature)
 
     if(issuerPublicKey.toLocaleLowerCase() === publicKey ){
-        // set session token or something like that?
-        res.json({"token": "valid"})
+        req.session.userId = publicKey
+        req.session.authenticated = true
+        res.json({"key": "valid"})
         return
     }
+    res.json({"key": "err"})
+})
 
-    res.json({"token": "err"})
+app.get('/logout', async (req:Request, res:Response) => {
+    req.session.destroy(() => {
+        res.json({message: "logout!"})
+    })
 })
 
 
@@ -115,14 +193,32 @@ app.get('/mapdata', (req:Request, res:Response) => {
 
 })
 
-app.use('/assets', express.static(path.join(process.cwd(), 'assets')))
+
+
 
 
 const mapsCache:Array<Array<InputFromPlayer>> = [[], [], [], [], []]
 
 
+// SOCKET.IO PART
 
-// console.log(mapsCache[1])
+// MIDDLEWARE
+
+const wrap = (middleware:any) => (socket:any, next:any) => middleware(socket.request, {}, next);
+
+io.use(wrap(sessionMiddleware));
+
+io.use((socket, next) => {
+    const session = socket.request.session;
+    if (session && session.authenticated) {
+      next();
+    } else {
+      next(new Error("unauthorized"));
+    }
+});
+
+
+// SENDING PLAYER POSITIONS ACROSS ALL MAPS
 
 for (let i = 1; i < NUMBER_OF_MAPS + 1; i++) {
     setTimeout(() => {
@@ -139,12 +235,9 @@ for (let i = 1; i < NUMBER_OF_MAPS + 1; i++) {
 }
 
 
-
-
-
-
-
 io.on("connection", socket => {
+
+    console.log(socket.request.session)
 
     const playerId:string = socket.handshake.query.id as string
     if(playerId == 'null') return

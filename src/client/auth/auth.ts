@@ -8,6 +8,18 @@ document.getElementById('connectWalletBtn')?.addEventListener('click', e => {
     web3i.connectWallet();
 })
 
+document.getElementById('checkSession')?.addEventListener('click', async (e:Event) => {
+    const res = await fetch(process.env.GENERAL_URL + "test")
+    const resJson = await res.json()
+    console.log(resJson)
+})
+
+document.getElementById('logoutBtn')?.addEventListener('click', async (e:Event) => {
+    const res = await fetch(process.env.GENERAL_URL + "logout")
+    const resJson = await res.json()
+    console.log(resJson)
+})
+
 document.getElementById('play')?.addEventListener('click', async (e:Event) => {
 
     const res = await fetch(process.env.GENERAL_URL + "authphrase")
