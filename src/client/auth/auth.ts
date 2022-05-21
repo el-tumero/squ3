@@ -8,6 +8,25 @@ document.getElementById('connectWalletBtn')?.addEventListener('click', e => {
     web3i.connectWallet();
 })
 
-document.getElementById('play')?.addEventListener('click', e => {
-    web3i.get().eth.personal.sign("123", web3i.getMyAddress())
+document.getElementById('play')?.addEventListener('click', async (e:Event) => {
+
+    const res = await fetch(process.env.GENERAL_URL + "authphrase")
+    const resJson = await res.json()
+    const signature:string = await web3i.get().eth.personal.sign(resJson.hashedPhrase, web3i.getMyAddress())
+
+    // console.log(signature)
+    
+    const resToken = await fetch(process.env.GENERAL_URL + "auth", {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({public_key: web3i.getMyAddress(), signature: signature})
+    })
+
+    const token = await resToken.json()
+
+
+    console.log(token)
 })

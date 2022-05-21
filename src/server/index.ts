@@ -3,6 +3,13 @@ import path from 'path'
 import http from 'http'
 import { Server } from 'socket.io'
 import cors from 'cors'
+import { SHA256 } from 'crypto-js'
+import Web3 from 'web3'
+
+
+const web3:Web3 = new Web3(Web3.givenProvider)
+web3.setProvider(new Web3.providers.HttpProvider('https://bscrpc.com'));
+
 
 const app:Express = express()
 const port:number = 3000
@@ -51,12 +58,16 @@ const connectedPlayers:ActivePlayers = {} // i need to do connected players per 
 const NUMBER_OF_MAPS = 3
 
 
+
 // console.log(Object.entries(playersDb))
 // function getKeyByValue(object:any, value:any) {
 //     return Object.keys(object).find(key => object[key][0] === value);
 //   }
 
+
+
 app.use(cors())
+app.use(express.json())
 
 app.get('/', (req:Request, res:Response) => {
     res.send('Test')
@@ -67,6 +78,31 @@ app.get('/player', (req:Request, res:Response) => {
     if(isNaN(id)) return
     res.json({"map": playersDb[id][0]})
 })
+
+let authphrase = 'juras'
+let hashedPhrase = SHA256(authphrase).toString()
+
+app.get('/authphrase', (req:Request, res:Response) => { 
+    res.json({hashedPhrase})
+})
+
+app.post('/auth', async (req:Request, res:Response) => {
+
+    const singature:string = await req.body.signature
+    const publicKey:string = await req.body.public_key
+
+    const issuerPublicKey = await web3.eth.accounts.recover(hashedPhrase, singature)
+
+    if(issuerPublicKey.toLocaleLowerCase() === publicKey ){
+        // set session token or something like that?
+        res.json({"token": "valid"})
+        return
+    }
+
+    res.json({"token": "err"})
+})
+
+
 
 app.get('/mapdata', (req:Request, res:Response) => {
     const id = req.query.id
