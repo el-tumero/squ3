@@ -40,27 +40,37 @@ interface PlayersCords {
 
 (async () => {
     
-    await getUserId()
-    var socket =  await io(process.env.SOCKET_URL!, {
-        query: {
-            id: window.userId 
-        }
-    })
+    const state:boolean = await getUserId()
 
-    start(socket)
-
-
+    if(state){
+        var socket =  await io(process.env.SOCKET_URL!, {
+            query: {
+                id: 0
+            }
+        })
+    
+        start(socket)
+    }
+    
 })()
 
 
-async function getUserId():Promise<void>{
+async function getUserId():Promise<boolean>{
     const resUserId = await fetch('/getId')
     const resJson = await resUserId.json()
     const userPublickey = resJson.message
 
+    if(userPublickey == "error"){
+        alert("User not authenticated!")
+        return false
+    }
+
     if(userPublickey == '0xaDc35b0F0Eb14709cBCF28086C505EA976BF8c99'.toLocaleLowerCase()){
         window.userId = 0
+        return true
     }
+
+    return false
     
 }
 

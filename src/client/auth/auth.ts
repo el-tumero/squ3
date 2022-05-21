@@ -9,7 +9,7 @@ document.getElementById('connectWalletBtn')?.addEventListener('click', e => {
 })
 
 document.getElementById('checkSession')?.addEventListener('click', async (e:Event) => {
-    const res = await fetch(process.env.GENERAL_URL + "test")
+    const res = await fetch(process.env.GENERAL_URL + "getid")
     const resJson = await res.json()
     console.log(resJson)
 })
