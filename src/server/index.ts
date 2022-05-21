@@ -7,10 +7,7 @@ import { SHA256 } from 'crypto-js'
 import Web3 from 'web3'
 import session, {Session, SessionData} from 'express-session'
 import {IncomingMessage} from 'http'
-// import connectToDb from './mongooseConfig'
-// import { Connection } from 'mongoose'
 import MongoStore from 'connect-mongo'
-import { Socket } from 'socket.io-client'
 
 
 const web3:Web3 = new Web3(Web3.givenProvider)
@@ -21,11 +18,7 @@ const port:number = 3000
 const server = http.createServer(app)
 
 interface Database{
-    [playerId: number]: Array<number>
-}
-
-interface SessionStorage{
-    [playerId: string]: Session & Partial<SessionData>
+    [playerId: string]: Array<number>
 }
 
 interface ActivePlayers{
@@ -33,10 +26,14 @@ interface ActivePlayers{
 }
 
 type InputFromPlayer = {
-    id:number
+    id:string
     x:number
     y:number
+}
 
+type PlayerCords = {
+    x:number
+    y:number
 }
 
 type Message = {
@@ -55,8 +52,8 @@ const io = new Server(server, {
 
 // for hardcoded cords
 const playersDb:Database = {
-    0: [1, 480, 480],
-    1: [1, 432, 336]
+    "0xadc35b0f0eb14709cbcf28086c505ea976bf8c99": [1, 480, 480],
+    "0x1fb0d6ecb9709b539013c05b6c96201501ee68df": [1, 432, 336]
 }
 
 //======= DECLARATIONS ======
@@ -72,13 +69,6 @@ declare module 'http' {
         session: any
     }
 }
-
-// declare module "sock" { 
-//     export interface  {
-//       session: any
-//     }
-//   }
-
 
 
 Object.values(playersDb).forEach(playerData => {
@@ -135,8 +125,8 @@ app.get('/game', (req:Request, res:Response) => {
 })
 
 app.get('/player', (req:Request, res:Response) => {
-    const id:number = Number(req.query.id)
-    if(isNaN(id)) return
+    const id:string = req.query.id as string
+    if(id == 'null') return
     res.json({"map": playersDb[id][0]})
 })
 
@@ -183,12 +173,12 @@ app.get('/logout', async (req:Request, res:Response) => {
 
 
 app.get('/mapdata', (req:Request, res:Response) => {
-    const id = req.query.id
+    const id:number = Number(req.query.id)
+    if(isNaN(id)) return
     const playerDbFormated = Object.entries(playersDb)
-
-    const result = playerDbFormated.filter(entry => entry[1][0] == id)
-    
+    const result = playerDbFormated.filter(entry => entry[1][0] == id)    
     const json = Object.fromEntries(result)
+
     res.json(json)
 
 })
@@ -239,17 +229,19 @@ io.on("connection", socket => {
 
     console.log(socket.request.session)
 
-    const playerId:string = socket.handshake.query.id as string
-    if(playerId == 'null') return
+    const playerId:string = socket.request.session.userId
+
+    // const playerId:string = socket.handshake.query.id as string
+    // if(playerId == 'null') return
     // if(playerId.length == 0) return
 
-    const playerIdNum:number = Number(playerId)
+    // const playerIdNum:number = Number(playerId)
 
     console.log("player " + playerId +" connected!")
 
     connectedPlayers[playerId] = true
 
-    let location:InputFromPlayer = {id: -1, x: -1, y: -1};
+   
 
     socket.on("changeMap", data => {
         playersDb[data.who][0] = data.to
@@ -265,8 +257,8 @@ io.on("connection", socket => {
     })
 
 
-    sendMapListener(playersDb[playerIdNum][0])
-    msgBroadcast(playersDb[playerIdNum][0])
+    sendMapListener(playersDb[playerId][0])
+    msgBroadcast(playersDb[playerId][0])
 
 
     function msgBroadcast(_mapId:number){
@@ -277,20 +269,20 @@ io.on("connection", socket => {
 
     function sendMapListener(_mapId:number){
         socket.on("map" + _mapId+ "send", (data:InputFromPlayer) => {
-            // console.log(_mapId)
-            if(data.id == playerIdNum){
-                location = data
+            if(data.id == playerId){
+                currentPlayerLocation.x = data.x
+                currentPlayerLocation.y = data.y
                 mapsCache[_mapId].push(data)
             } 
         })    
     }
 
+    let currentPlayerLocation:PlayerCords = {x: -1, y: -1};
     
     function updatePositionInDB(){
-        if(location.id != -1){
-        playersDb[playerIdNum][1] = location.x
-        playersDb[playerIdNum][2] = location.y
-        // console.log(playersDb[playerIdNum])
+        if(currentPlayerLocation.x != -1 || currentPlayerLocation.y != -1){ //??
+            playersDb[playerId][1] = currentPlayerLocation.x
+            playersDb[playerId][2] = currentPlayerLocation.y
         }
     }
 

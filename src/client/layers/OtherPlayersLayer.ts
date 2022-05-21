@@ -32,7 +32,7 @@ export default class OtherPlayersLayer extends TextureLayer{
         this.activePlayers[_id] = otherPlayer
 
         const playerImg:HTMLImageElement = new Image();
-        playerImg.src = process.env.ASSETS_URL + 'spritesheets/player_spritesheet' + _id+ '.png';    
+        playerImg.src = process.env.ASSETS_URL + 'spritesheets/' + _id+ '.png';    
 
         playerImg.onload = () => {
             otherPlayer.loadSpritesheet(playerImg)

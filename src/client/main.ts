@@ -43,15 +43,10 @@ interface PlayersCords {
     const state:boolean = await getUserId()
 
     if(state){
-        var socket =  await io(process.env.SOCKET_URL!, {
-            query: {
-                id: 0
-            }
-        })
-    
+        var socket =  await io(process.env.SOCKET_URL!)
         start(socket)
     }
-    
+
 })()
 
 
@@ -65,12 +60,12 @@ async function getUserId():Promise<boolean>{
         return false
     }
 
-    if(userPublickey == '0xaDc35b0F0Eb14709cBCF28086C505EA976BF8c99'.toLocaleLowerCase()){
-        window.userId = 0
-        return true
-    }
+    window.userId = userPublickey
+    console.log(userPublickey)
+    return true
 
-    return false
+
+
     
 }
 
