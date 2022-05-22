@@ -8,10 +8,12 @@ import Web3 from 'web3'
 import session, {Session, SessionData} from 'express-session'
 import {IncomingMessage} from 'http'
 import MongoStore from 'connect-mongo'
+import Contract from '../../contracts/artifacts/Storage_metadata.json'
+import {AbiItem} from 'web3-utils'
 
 
 const web3:Web3 = new Web3(Web3.givenProvider)
-web3.setProvider(new Web3.providers.HttpProvider('https://bscrpc.com'));
+web3.setProvider(new Web3.providers.HttpProvider('https://rpctest.meter.io/'));
 
 const app:Express = express()
 const port:number = 3000
@@ -99,6 +101,24 @@ const NUMBER_OF_MAPS = 3
 const oneDay = 86400000
 
 
+// === WEB3 ===
+
+// contract address: 0x62583229d7A57033268A59Fc03096cC7152dEb06
+
+let abi = Contract.output.abi
+const contractAddress = "0x62583229d7A57033268A59Fc03096cC7152dEb06"
+let contract = new web3.eth.Contract(abi as AbiItem[], contractAddress)
+
+// function setContractInterface():void{
+
+// }
+
+async function getDataFromContract():Promise<string>{
+    return await contract.methods.retrieve().call()
+}
+
+
+
 // SESSION STUFF
 
 // const connection:Connection = connectToDb()
@@ -174,6 +194,14 @@ app.get('/getid', (req:Request, res:Response) => {
     }
 
     res.json({message: "error" })
+
+})
+
+app.get('/contractdata', async (req:Request, res:Response) => {
+
+    const data = await getDataFromContract()
+
+    res.json({message: data })
 
 })
 
