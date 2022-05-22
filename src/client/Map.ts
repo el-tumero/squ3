@@ -136,17 +136,21 @@ export default class Map{
         const serverResponse = await fetch('/contractdata?id='+window.userId)
         const serverResponseJson = await serverResponse.json()
 
-        const ipfsMetadata = await fetch(ipfsGateway + serverResponseJson.cid)
-        const ipfsMetadataJson = await ipfsMetadata.json()
+        if(serverResponseJson.cid !== 'err'){
+            const ipfsMetadata = await fetch(ipfsGateway + serverResponseJson.cid)
+            const ipfsMetadataJson = await ipfsMetadata.json()
 
-        console.log(ipfsMetadataJson)
+            console.log(ipfsMetadataJson)
         
-        const playerImg:HTMLImageElement = new Image();
-        playerImg.src = ipfsGateway + ipfsMetadataJson.imgCid
+            const playerImg:HTMLImageElement = new Image();
+            playerImg.src = ipfsGateway + ipfsMetadataJson.imgCid
 
-        playerImg.onload = () => {
-            this.localPlayer.loadSpritesheet(playerImg)
+            playerImg.onload = () => {
+                this.localPlayer.loadSpritesheet(playerImg)
+            }
         }
+
+        
 
 
     }
@@ -169,7 +173,7 @@ export default class Map{
        
         for (let i = 0; i < ids.length; i++) {
             const id = ids[i] as unknown
-            if(ids[i] != window.userId) otherPlayersLayer.createPlayer(id as number, this.playersCords[id as number])
+            if(ids[i] != window.userId) otherPlayersLayer.createPlayer(id as any, this.playersCords[id as any])
             
         }
 
