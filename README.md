@@ -1,4 +1,4 @@
 
-# Kingvon Project
-It would be nice to write here something someday ;)
-
+# Squ3 Project
+Pixel Metaverse 4 all powered by Meter.io
+Currently hosted on Meter.io
