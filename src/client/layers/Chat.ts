@@ -37,7 +37,7 @@ export default class Chat {
             const chatWindow = document.getElementById("chat")
         chatWindow!.style.visibility= "visible"
         this.state = "visible"
-        const msgInput:HTMLInputElement = document.getElementById("msgInput") as HTMLInputElement
+        const msgInput:HTMLInputElement = document.getElementById("msgInput") as unknown as HTMLInputElement
         msgInput.focus()
         }, 100)
         
@@ -64,7 +64,7 @@ export default class Chat {
 
     private sendEvent():void{
         if(this.state === 'visible'){
-            const msgInput:HTMLInputElement = document.getElementById("msgInput") as HTMLInputElement
+            const msgInput:HTMLInputElement = document.getElementById("msgInput") as unknown as HTMLInputElement
             const msgCtn:Message = {id: this.playerId, content: msgInput.value}
             this.socket.emit("chat", msgCtn)
             msgInput.value = ""
