@@ -1,6 +1,7 @@
 import express, {Express, Request, Response} from 'express'
 import path from 'path'
 import http from 'http'
+import fs from 'fs'
 import { Server } from 'socket.io'
 import cors from 'cors'
 import { SHA256 } from 'crypto-js'
@@ -8,8 +9,10 @@ import Web3 from 'web3'
 import session, {Session, SessionData} from 'express-session'
 import {IncomingMessage} from 'http'
 import MongoStore from 'connect-mongo'
-import Contract from '../../contracts/artifacts/Storage_metadata.json'
+import Contract from '../../contracts/artifacts/Squ3SkinsABI.json'
 import {AbiItem} from 'web3-utils'
+import pinataClient, { PinataPinOptions, PinataPinResponse } from '@pinata/sdk'
+import 'dotenv/config' 
 
 
 const web3:Web3 = new Web3(Web3.givenProvider)
@@ -67,6 +70,8 @@ const io = new Server(server, {
 const playersDb:Database = {}
 const lastMap:PlayerMap = {}
 
+
+// console.log(process.env.PINATA_API_KEY)
 // const lastMap:PlayerMap = {
 //     "0x1fb0d6ecb9709b539013c05b6c96201501ee68df": 1,
 //     "0x74c4b10f277a59a07be24c0aea1884f9fefeb5c5": 1,
@@ -103,19 +108,35 @@ const oneDay = 86400000
 
 // === WEB3 ===
 
-// contract address: 0x62583229d7A57033268A59Fc03096cC7152dEb06
+// contract address: 0x425493f30662deB8722ca13DBf265E9a9cfC2CC2
 
-let abi = Contract.output.abi
-const contractAddress = "0x62583229d7A57033268A59Fc03096cC7152dEb06"
+let abi = Contract
+const contractAddress = "0x425493f30662deB8722ca13DBf265E9a9cfC2CC2"
 let contract = new web3.eth.Contract(abi as AbiItem[], contractAddress)
 
 // function setContractInterface():void{
 
 // }
 
-async function getDataFromContract():Promise<string>{
-    return await contract.methods.retrieve().call()
+async function getNftURI(_id:string, _indx:number):Promise<string>{
+    const tokenId = await contract.methods.tokenOfOwnerByIndex(_id, _indx).call()    
+    const uri = await contract.methods.tokenURI(tokenId).call()
+    return uri
 }
+
+const pinata = pinataClient(process.env.PINATA_API_KEY as string, process.env.PINATA_SECRET as string)
+
+pinata.testAuthentication().then((result) => {
+    //handle successful authentication here
+    console.log('Pinata status:')
+    console.log(result);
+}).catch((err) => {
+    //handle error here
+    console.log(err);
+});
+
+
+
 
 
 
@@ -179,7 +200,7 @@ app.get('/player', (req:Request, res:Response) => {
     
 })
 
-let authphrase = 'juras'
+let authphrase = process.env.AUTH_PHRASE as string
 let hashedPhrase = SHA256(authphrase).toString()
 
 app.get('/authphrase', (req:Request, res:Response) => { 
@@ -197,11 +218,84 @@ app.get('/getid', (req:Request, res:Response) => {
 
 })
 
+app.post('/mint', async (req:Request, res:Response) => {
+
+    const name:string = req.body.name
+    const base64img:string = req.body.base64 
+    const creator:string = req.body.creator
+    const base64ImgLength = (base64img.length * (3/4)) - 2 
+    const sourcePath = "./temp/temp-img.png"
+    const timestamp = Date.now().toString()
+
+
+    const imgOptions:PinataPinOptions = {
+        pinataMetadata: {
+            name:name
+        },
+        pinataOptions: {
+            cidVersion: 0
+        }
+    }
+    
+    const jsonOptions:PinataPinOptions = {
+        pinataMetadata: {
+            name:name + "Metadata"
+        },
+        pinataOptions: {
+            cidVersion: 0
+        }
+    }
+
+    const body = {
+        name: name,
+        creator: creator,
+        timestamp: timestamp,
+        imgCid: ""
+    }
+
+    // console.log(base64img, name)
+
+    if(base64ImgLength < 20000){
+        const preparedBase64 = base64img.replace(/^data:image\/png;base64,/, "");
+        await fs.writeFile(sourcePath, preparedBase64, 'base64', (info) => {
+
+            pinata.pinFromFS(sourcePath, imgOptions).then((result:PinataPinResponse) => {
+                const imgCid:string = result.IpfsHash
+                body.imgCid = imgCid
+
+                pinata.pinJSONToIPFS(body, jsonOptions).then((result:PinataPinResponse) => {
+                    console.log('Image and metadata placed!')
+                    res.json({response: result.IpfsHash})
+                }).catch((err) => {
+                    console.log(err)
+                })
+
+            }).catch(err => {
+                console.log(err)
+            })
+        
+        })
+
+        
+
+        
+
+    }
+
+    console.log('saved')
+    // console.log(req.body)
+})
+
 app.get('/contractdata', async (req:Request, res:Response) => {
 
-    const data = await getDataFromContract()
+    const rawId:string = req.query.id as string
+    const id = rawId.toLocaleLowerCase()
+    const indx = 0
 
-    res.json({message: data })
+
+    const data = await getNftURI(id, indx)
+
+    res.json({cid: data})
 
 })
 
@@ -288,7 +382,7 @@ io.on("connection", socket => {
 
     console.log("player " + playerId +" connected!")
 
-    if(typeof playersDb[playerId][0] !== 'undefined'){
+    if(typeof playersDb[playerId] !== 'undefined'){
 
     
   

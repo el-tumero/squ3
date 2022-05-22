@@ -73,6 +73,7 @@ export default class Map{
         //console.log(_playersCords)
 
         this.localPlayer = this.createPlayer()
+        this.loadPlayerSkin()
         this.addCollision(_collisions)
         this.addInteractions(_interactions)
 
@@ -127,6 +128,27 @@ export default class Map{
        
         return player1
         
+    }
+
+    private async loadPlayerSkin():Promise<void>{
+
+        const ipfsGateway = 'https://gateway.pinata.cloud/ipfs/'
+        const serverResponse = await fetch('/contractdata?id='+window.userId)
+        const serverResponseJson = await serverResponse.json()
+
+        const ipfsMetadata = await fetch(ipfsGateway + serverResponseJson.cid)
+        const ipfsMetadataJson = await ipfsMetadata.json()
+
+        console.log(ipfsMetadataJson)
+        
+        const playerImg:HTMLImageElement = new Image();
+        playerImg.src = ipfsGateway + ipfsMetadataJson.imgCid
+
+        playerImg.onload = () => {
+            this.localPlayer.loadSpritesheet(playerImg)
+        }
+
+
     }
 
     private applyOffset(_x:number, _y:number):void{
@@ -189,6 +211,7 @@ export default class Map{
                     this.otherPlayersLayer.createPlayer(data.who, this.playersCords[data.who])
                     
                 }
+
 
             }
 

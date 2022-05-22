@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.6.0",
+    "@pinata/sdk": "^1.1.25",
     "@types/cookie-parser": "^1.4.3",
     "@types/crypto-js": "^4.1.1",
     "@types/express-session": "^1.17.4",
@@ -29,6 +30,7 @@
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "crypto-js": "^4.1.1",
+    "dotenv": "^16.0.1",
     "express": "^4.18.0",
     "express-session": "^1.17.3",
     "mongoose": "^6.3.4",
