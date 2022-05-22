@@ -41,7 +41,6 @@ interface PlayersCords {
 (async () => {
     
     const state:boolean = await getUserId()
-
     if(state){
         var socket =  await io(process.env.SOCKET_URL!)
         start(socket)
@@ -140,18 +139,21 @@ document.addEventListener("changeMap", async (e) => {
 
 
 atlasImg.onload = async () => {
+    console.log("Graphics loaded!")
 
     mainAtlas = new Atlas(256, 256, atlasImg, 32)
 
-    const playerResponse = await fetch(process.env.GENERAL_URL+ 'player?id=' + window.userId)
+    const playerResponse = await fetch(process.env.GENERAL_URL+ 'player')
     const localPlayerData = await playerResponse.json()
 
+    // console.log(localPlayerData)
     
 
     const mapResponse = await fetch(process.env.GENERAL_URL+ 'mapdata?id=' + localPlayerData.map)
     const playersOnMap = await mapResponse.json()
-    console.log(playersOnMap)
-    //as PlayersCords
+
+    // console.log(playersOnMap)
+
 
     const mapData = mapsData[localPlayerData.map - 1]  
 

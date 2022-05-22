@@ -37,6 +37,10 @@ document.getElementById('play')?.addEventListener('click', async (e:Event) => {
         body: JSON.stringify({public_key: web3i.getMyAddress(), signature: signature})
     })
 
+    const init = await fetch('/player')
+    const initJson = await init.json()
+    console.log(initJson)
+
     const token = await resToken.json()
 
 

@@ -55,18 +55,22 @@ const io = new Server(server, {
 // needs to migrate to DB
 
 // for hardcoded cords
-const playersDb:Database = {
-    "0xadc35b0f0eb14709cbcf28086c505ea976bf8c99": [-1, 480, 480],
-    "0x1fb0d6ecb9709b539013c05b6c96201501ee68df": [-1, 432, 336],
-    "0x74c4b10f277a59a07be24c0aea1884f9fefeb5c5": [-1, 480, 336]
-}
+// const playersDb:Database = {
+//     "0xadc35b0f0eb14709cbcf28086c505ea976bf8c99": [-1, 480, 480],
+//     "0x1fb0d6ecb9709b539013c05b6c96201501ee68df": [-1, 432, 336],
+//     "0x74c4b10f277a59a07be24c0aea1884f9fefeb5c5": [-1, 480, 336]
+// }
 
-const lastMap:PlayerMap = {
-    "0x1fb0d6ecb9709b539013c05b6c96201501ee68df": 1,
-    "0x74c4b10f277a59a07be24c0aea1884f9fefeb5c5": 1,
-    "0xadc35b0f0eb14709cbcf28086c505ea976bf8c99": 1
 
-}
+const playersDb:Database = {}
+const lastMap:PlayerMap = {}
+
+// const lastMap:PlayerMap = {
+//     "0x1fb0d6ecb9709b539013c05b6c96201501ee68df": 1,
+//     "0x74c4b10f277a59a07be24c0aea1884f9fefeb5c5": 1,
+//     "0xadc35b0f0eb14709cbcf28086c505ea976bf8c99": 1
+
+// }
 
 //======= DECLARATIONS ======
 
@@ -137,9 +141,22 @@ app.get('/game', (req:Request, res:Response) => {
 })
 
 app.get('/player', (req:Request, res:Response) => {
-    const id:string = req.query.id as string
-    if(id == 'null') return
-    res.json({"map": lastMap[id]})
+
+    if(req.session.userId){
+
+        // console.log(playersDb)
+        // console.log(lastMap)
+
+        if(typeof playersDb[req.session.userId] == 'undefined'){
+            playersDb[req.session.userId] = [-1, 480, 480]
+            lastMap[req.session.userId] = 1
+        }
+
+        res.json({map: lastMap[req.session.userId] })
+        return
+    }
+    res.json({message: "error" })
+    
 })
 
 let authphrase = 'juras'
@@ -239,13 +256,14 @@ for (let i = 1; i < NUMBER_OF_MAPS + 1; i++) {
 
 io.on("connection", socket => {
 
-    // console.log(socket.request.session)
     const playerId:string = socket.request.session.userId
 
     console.log("player " + playerId +" connected!")
 
-   
+    if(typeof playersDb[playerId][0] !== 'undefined'){
 
+    
+  
     const mapToSpawn = lastMap[playerId]
 
     playersDb[playerId][0] = mapToSpawn
@@ -254,18 +272,7 @@ io.on("connection", socket => {
 
     io.emit("changeMap", {from: -1, to: mapToSpawn, who: playerId})
 
-
-    // const playerId:string = socket.handshake.query.id as string
-    // if(playerId == 'null') return
-    // if(playerId.length == 0) return
-
-    // const playerIdNum:number = Number(playerId)
-
-    
-
-    
-
-   
+    console.log(playersDb)
 
     socket.on("changeMap", data => {
         console.log(data)
@@ -333,6 +340,7 @@ io.on("connection", socket => {
 
     // server-side validation -> trzeba zrobić!! JOI LIBRARY
 
+    }
 })
 
 

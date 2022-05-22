@@ -110,7 +110,8 @@ export default class Map{
         const x:number = this.playersCords[id][1] * 1.5 // because of scale ;))
         const y:number = this.playersCords[id][2] * 1.5
         
-        console.log(x, y)
+        // PLAYERS CORDS
+        // console.log(x, y)
 
         const player1 = new Player(this.ctx, x, y, this)
 
@@ -171,7 +172,8 @@ export default class Map{
 
         this.socket.on("changeMap", async(data) => {
           
-            console.log(data)
+            // changemap socket data
+            // console.log(data)
             if(data.who !== window.userId){
                 if(data.from == this.id){
                     this.otherPlayersLayer.deletePlayer(data.who)
@@ -183,7 +185,7 @@ export default class Map{
                         const response = await fetch(process.env.GENERAL_URL + 'mapdata?id='+ this.id)
                         const playersOnMap = await response.json()
                         this.playersCords[data.who] = playersOnMap[data.who]
-                        console.log(playersOnMap[data.who])
+                        //console.log(playersOnMap[data.who])
                     this.otherPlayersLayer.createPlayer(data.who, this.playersCords[data.who])
                     
                 }
