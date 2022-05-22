@@ -53,7 +53,8 @@ const io = new Server(server, {
 // for hardcoded cords
 const playersDb:Database = {
     "0xadc35b0f0eb14709cbcf28086c505ea976bf8c99": [1, 480, 480],
-    "0x1fb0d6ecb9709b539013c05b6c96201501ee68df": [1, 432, 336]
+    "0x1fb0d6ecb9709b539013c05b6c96201501ee68df": [1, 432, 336],
+    "0x74c4b10f277a59a07be24c0aea1884f9fefeb5c5": [1, 480, 336]
 }
 
 //======= DECLARATIONS ======
@@ -244,8 +245,9 @@ io.on("connection", socket => {
    
 
     socket.on("changeMap", data => {
-        playersDb[data.who][0] = data.to
+        console.log(data)
         io.emit("changeMap", data)
+        playersDb[data.who][0] = data.to
         sendMapListener(data.to)
     })
 
@@ -262,8 +264,10 @@ io.on("connection", socket => {
 
 
     function msgBroadcast(_mapId:number){
-        socket.on("map" + _mapId + "chat", (msg:Message) => {
-            io.emit("map" + _mapId + "chat", msg)
+        socket.on("chat", (msg:Message) => {
+            if(msg.content.length < 125 && msg.content.length > 0){
+                io.emit("chat", msg)
+            }
         })
     }
 

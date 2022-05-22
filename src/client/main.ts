@@ -93,16 +93,21 @@ let mainAtlas:Atlas;
 
 const mapsData:Array<any> = [map1Data, map2Data, map3Data]
 
+let ui:UI | null
+
+let currentMap:Map | null
+
 document.addEventListener("changeMap", async (e) => {
 
-    
+    currentMap?.turnOffListeners()
+    game.clearArrays()
 
     //console.log()
     const oldId:number = (<any>e).detail.from as number
     const id:number = (<any>e).detail.to as number
     const mapData = mapsData[id -1]
 
-    socket.emit("changeMap", { from: oldId, to: id, who: window.userId })
+    
 
     //console.log(id)
     //console.log("MAP CHANGE!")
@@ -112,24 +117,23 @@ document.addEventListener("changeMap", async (e) => {
     const playersOnMap = await response.json()
 
 
-    const nMap = new Map(ctx, id, mainAtlas, mapData.backgroundLayerBlockId, mapData.objList, mapData.colliders, mapData.interactions, socket, playersOnMap)
+    currentMap = new Map(ctx, id, mainAtlas, mapData.backgroundLayerBlockId, mapData.objList, mapData.colliders, mapData.interactions, socket, playersOnMap)
 
-    
 
-    document.addEventListener("openDoor", (e) => {
-        console.log('door opened')
-        const x:number = (<any>e).detail.x as number
-        const y:number = (<any>e).detail.y as number
+    // document.addEventListener("openDoor", (e) => {
+    //     console.log('door opened')
+    //     const x:number = (<any>e).detail.x as number
+    //     const y:number = (<any>e).detail.y as number
 
-        nMap.deleteObject(x, y)
+    //     currentMap?.deleteObject(x, y)
         
-    })
-    const nChat = new Chat(socket, id)//(false)
-    const ui = new UI(ctx, nMap, nChat)
+    //})
+    //const nChat = new Chat(socket, id)//(false)
+    ui = new UI(ctx, currentMap, socket)
 
-    game.addToDraw([nMap, ui])
-    game.addToUpdate([ui, nMap.getOtherPlayersLayer()]) //dodac update innych graczy
-    game.addToUpdatePlayer([nMap.getLocalPlayer()])
+    game.addToDraw([currentMap, ui])
+    game.addToUpdate([ui, currentMap.getOtherPlayersLayer()]) //dodac update innych graczy
+    game.addToUpdatePlayer([currentMap.getLocalPlayer()])
 
 
 })
@@ -151,13 +155,15 @@ atlasImg.onload = async () => {
 
     const mapData = mapsData[localPlayerData.map - 1]  
 
-    const map = new Map(ctx, localPlayerData.map, mainAtlas, mapData.backgroundLayerBlockId, mapData.objList, mapData.colliders, mapData.interactions, socket, playersOnMap)
+    currentMap = new Map(ctx, localPlayerData.map, mainAtlas, mapData.backgroundLayerBlockId, mapData.objList, mapData.colliders, mapData.interactions, socket, playersOnMap)
     const chat = new Chat(socket, localPlayerData.map)//(false)
-    const ui = new UI(ctx, map, chat)
+    ui = new UI(ctx, currentMap, socket, chat)
 
-    game.addToDraw([map, ui])
-    game.addToUpdate([ui, map.getOtherPlayersLayer()]) // otherPlayers
-    game.addToUpdatePlayer([map.getLocalPlayer()])
+
+
+    game.addToDraw([currentMap, ui])
+    game.addToUpdate([ui, currentMap.getOtherPlayersLayer()]) // otherPlayers
+    game.addToUpdatePlayer([currentMap.getLocalPlayer()])
 
     game.startAnimating()
 

@@ -78,6 +78,7 @@ export default class Map{
 
         this.updateOtherPlayersPositions()
         this.updateOtherPlayersPresenece()
+        
     
         
     }
@@ -161,9 +162,15 @@ export default class Map{
         })
     }
 
-    private updateOtherPlayersPresenece():void{
-        this.socket.on("changeMap", async(data) => {
+    public turnOffListeners():void{
+        this.socket.off("changeMap")
+        this.socket.off("map" + this.id + "recv")
+    }
 
+    private updateOtherPlayersPresenece():void{
+
+        this.socket.on("changeMap", async(data) => {
+          
             console.log(data)
             if(data.who !== window.userId){
                 if(data.from == this.id){

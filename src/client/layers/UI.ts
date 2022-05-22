@@ -4,6 +4,7 @@ import Interaction from "./Interaction";
 import Letters from "./ui/Letters";
 import Textarea from "./ui/Textarea";
 import Chat from "./Chat";
+import { Socket } from "socket.io-client";
 
 type UITextureSet = {
     panel:HTMLImageElement
@@ -13,20 +14,22 @@ type UITextureSet = {
 export default class UI extends TextureLayer {
 
     private mapRef:Map
-    private chatRef:Chat
+    private chatRef:Chat | undefined
     private intrRef:Interaction | null = null
     private isDetected:boolean = false
     private isActive:boolean = false
     private panelTexture:HTMLImageElement = new Image()
     private font:Letters
     private hintTextarea:Textarea
+    private socket:Socket
 
-    constructor(_domCtx: CanvasRenderingContext2D, _mapRef:Map, _chatRef:Chat){
+    constructor(_domCtx: CanvasRenderingContext2D, _mapRef:Map, _socket:Socket, _chatRef?:Chat ){
         super(_domCtx)
         this.mapRef = _mapRef
         this.chatRef = _chatRef
         this.canvas.width = 960
         this.canvas.height = 960
+        this.socket = _socket
 
         this.loadTextures() 
 
@@ -65,26 +68,31 @@ export default class UI extends TextureLayer {
                     if(this.intrRef.getInfo().includes("portal")){
                         let mapId:number = Number(this.intrRef.getInfo()[6])
                         const mapChangeEvent:CustomEvent = new CustomEvent('changeMap', {detail: {from:this.mapRef.getId(), to: mapId} });
+                        // console.log("emit" + mapId)
+                        this.socket.emit("changeMap", { from: this.mapRef.getId(), to: mapId, who: window.userId })
                         document.dispatchEvent(mapChangeEvent)
                     }
                 }
             }
         })
 
-        document.addEventListener("keydown", t => {
-            if(t.key === "t"){
-                this.chatRef.isChat()
-                if (this.chatRef.chat == true){
-                    // console.log('chat on')
-                    this.chatRef.showChat()
+        if(this.chatRef){
+            document.addEventListener("keydown", (e:KeyboardEvent) => {
+                if(e.key === "t"){
+                    this.chatRef?.isChat()
+                    if (this.chatRef?.chat == true){
+                        this.chatRef?.showChat()
+                    }
                 }
-                if (this.chatRef.chat == false) {
-                    // console.log('chat off')
-                    this.chatRef.hideChat()
+
+                if(e.key === "Escape"){
+                    // console.log("esc")
+                    this.chatRef?.hideChat()                    
                 }
             }
+        )}
         }
-    )}
+       
 
     private detectInteraction():void{
         

@@ -35,7 +35,11 @@ export default class GameLoop{
     }
 
 
-
+    public clearArrays():void{
+        this.drawArr = []
+        this.updatePlayerArr = []
+        this.updateArr = []
+    }
 
     private update():void{
         this.updateArr.forEach(element => {
