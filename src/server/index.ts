@@ -19,7 +19,7 @@ const web3:Web3 = new Web3(Web3.givenProvider)
 web3.setProvider(new Web3.providers.HttpProvider('https://rpctest.meter.io/'));
 
 const app:Express = express()
-const port:number = 3000
+const port:number = Number(process.env.PORT)
 const server = http.createServer(app)
 
 interface Database{
