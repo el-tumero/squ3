@@ -118,7 +118,7 @@ export default class Map{
         this.applyOffset(-(480-x)/1.5, -(480-y)/1.5) //omg this is epic
 
         const playerImg:HTMLImageElement = new Image();
-        playerImg.src = process.env.ASSETS_URL + 'spritesheets/' + window.userId + '.png';    
+        playerImg.src = process.env.ASSETS_URL + 'spritesheets/default.png';    
 
         playerImg.onload = () => {
             player1.loadSpritesheet(playerImg)

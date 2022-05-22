@@ -31,6 +31,10 @@ type InputFromPlayer = {
     y:number
 }
 
+interface PlayerMap{
+    [playerId: string]: number
+}
+
 type PlayerCords = {
     x:number
     y:number
@@ -52,9 +56,16 @@ const io = new Server(server, {
 
 // for hardcoded cords
 const playersDb:Database = {
-    "0xadc35b0f0eb14709cbcf28086c505ea976bf8c99": [1, 480, 480],
-    "0x1fb0d6ecb9709b539013c05b6c96201501ee68df": [1, 432, 336],
-    "0x74c4b10f277a59a07be24c0aea1884f9fefeb5c5": [1, 480, 336]
+    "0xadc35b0f0eb14709cbcf28086c505ea976bf8c99": [-1, 480, 480],
+    "0x1fb0d6ecb9709b539013c05b6c96201501ee68df": [-1, 432, 336],
+    "0x74c4b10f277a59a07be24c0aea1884f9fefeb5c5": [-1, 480, 336]
+}
+
+const lastMap:PlayerMap = {
+    "0x1fb0d6ecb9709b539013c05b6c96201501ee68df": 1,
+    "0x74c4b10f277a59a07be24c0aea1884f9fefeb5c5": 1,
+    "0xadc35b0f0eb14709cbcf28086c505ea976bf8c99": 1
+
 }
 
 //======= DECLARATIONS ======
@@ -128,7 +139,7 @@ app.get('/game', (req:Request, res:Response) => {
 app.get('/player', (req:Request, res:Response) => {
     const id:string = req.query.id as string
     if(id == 'null') return
-    res.json({"map": playersDb[id][0]})
+    res.json({"map": lastMap[id]})
 })
 
 let authphrase = 'juras'
@@ -228,9 +239,21 @@ for (let i = 1; i < NUMBER_OF_MAPS + 1; i++) {
 
 io.on("connection", socket => {
 
-    console.log(socket.request.session)
-
+    // console.log(socket.request.session)
     const playerId:string = socket.request.session.userId
+
+    console.log("player " + playerId +" connected!")
+
+   
+
+    const mapToSpawn = lastMap[playerId]
+
+    playersDb[playerId][0] = mapToSpawn
+
+    connectedPlayers[playerId] = true
+
+    io.emit("changeMap", {from: -1, to: mapToSpawn, who: playerId})
+
 
     // const playerId:string = socket.handshake.query.id as string
     // if(playerId == 'null') return
@@ -238,20 +261,36 @@ io.on("connection", socket => {
 
     // const playerIdNum:number = Number(playerId)
 
-    console.log("player " + playerId +" connected!")
+    
 
-    connectedPlayers[playerId] = true
+    
 
    
 
     socket.on("changeMap", data => {
         console.log(data)
+        
+        if(data.who === playerId){
+            playersDb[data.who][0] = data.to
+
+            if(data.to !== -1) lastMap[data.who] = data.to
+
+            sendMapListener(data.to)
+
+
+        }
+
+        
+
         io.emit("changeMap", data)
-        playersDb[data.who][0] = data.to
-        sendMapListener(data.to)
+        
     })
 
     socket.on("disconnect", reason => {
+        // console.log(connectedPlayers)
+        io.emit("changeMap", {from: playersDb[playerId][0], to: -1, who: playerId})
+
+        playersDb[playerId][0] = -1
         console.log("player " + playerId +" disconnected!")
         clearInterval(updatePositionInDBInterval)
         connectedPlayers[playerId] = false
