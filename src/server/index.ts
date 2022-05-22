@@ -119,9 +119,19 @@ let contract = new web3.eth.Contract(abi as AbiItem[], contractAddress)
 // }
 
 async function getNftURI(_id:string, _indx:number):Promise<string>{
-    const tokenId = await contract.methods.tokenOfOwnerByIndex(_id, _indx).call()    
-    const uri = await contract.methods.tokenURI(tokenId).call()
-    return uri
+
+    try{
+        const tokenId = await contract.methods.tokenOfOwnerByIndex(_id, _indx).call()
+        const uri = await contract.methods.tokenURI(tokenId).call()
+        return uri
+    }catch(err){
+        return "err"
+    }
+    
+     
+    // console.log(tokenId)
+    
+    
 }
 
 const pinata = pinataClient(process.env.PINATA_API_KEY as string, process.env.PINATA_SECRET as string)
@@ -145,7 +155,8 @@ pinata.testAuthentication().then((result) => {
 // const connection:Connection = connectToDb()
 
 const sessionStore:MongoStore = MongoStore.create({
-    mongoUrl: 'mongodb://localhost:27017/squ3',
+    // mongoUrl: 'mongodb://localhost:27017/squ3',
+    mongoUrl: process.env.MONGO,
     collectionName: 'sessions'
 })
 
@@ -158,7 +169,7 @@ app.use(express.json())
 //app.use(express.urlencoded({extended:true})) //destroys everything??
 
 const sessionMiddleware = session({
-    secret: "juras2",
+    secret: process.env.SECRET2 as string,
     saveUninitialized: true,
     cookie: {maxAge: oneDay},
     resave: false,

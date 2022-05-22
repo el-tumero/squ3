@@ -1,0 +1,427 @@
+body, html {
+    background-color: #282C2F;
+    margin: 0 !important;
+    padding: 0 !important;
+    -ms-overflow-style: none !important;
+    scrollbar-width: none !important;
+    font-family: 'pixel_operatorregular';
+    scroll-behavior: smooth;
+}
+::-webkit-scrollbar {
+    display: none;
+  }
+@font-face {
+    font-family: 'pixel_operatorregular';
+    src: url('./fonts/pixeloperator-webfont.woff2') format('woff2'),
+         url('./fonts/pixeloperator-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    color: rgb(255, 255, 255);
+}
+
+/* -------------------------------- */
+/* ------------animations-----------*/
+
+#wrapper-main {
+    animation: fadeInAnimation ease 1s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+  
+@keyframes fadeInAnimation {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+     }
+}
+
+/* -------------------------------- */
+/* --------------navbar-------------*/
+#header {
+    z-index: 1001;
+    min-width: 640px;
+    display: grid;
+    justify-content: center; 
+    align-items: center;
+    width: 100vw;
+    height: 36px;
+    position: fixed;
+    top: 0;
+    background-color: #282C2F;
+    border-bottom: 4px solid #202124;
+}
+#navbar {
+    display:inline;
+    width:100vw;
+    overflow:hidden;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+.list {
+    width: 100vw;
+    color: white;
+}
+#li_home{
+    margin-left:2%;
+    float:left;
+}
+#li_game{
+    float: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+#li_play{
+    margin-right:2%;
+    float:right;
+}
+#li_marketplace{
+    margin-left: 14%;
+    float:none;
+}
+#li_readmore{
+    float:right;
+    margin-right: 20%;
+}
+a{
+    font-size: 1.5em;
+}
+a:link {
+    color: white;
+}
+a:visited{
+    color: white;
+}
+
+/* -------------------------------- */
+/* ------------play button----------*/
+.disable-click{
+    pointer-events: none;
+}
+
+#play-ctn{
+    z-index: 1;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    position:relative;
+    width: 100%;
+    height: 100%;
+}
+#play-btn{
+    transform:scale(0.8);
+    background: url(./assets/play-btn1.png) no-repeat;
+    z-index: 10;
+    top: 30%;
+    width: 480px;
+    height: 240px;
+    position: fixed;
+    background-size:cover;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    color: black;
+}
+#play-btn:active{
+    background: url(./assets/play-btn2.png);
+}
+
+/* -------------------------------- */
+/* -------------page1---------------*/
+
+#page1main{
+    font-size:0;
+}
+
+#page1bgImg {
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    pointer-events:none;
+    z-index:0;
+    height: 100vh;
+    width: 100vw;
+}
+#page1bgDiv{
+    z-index:-1;
+    pointer-events:none;
+}
+#page1_grass{
+    pointer-events:none;
+    z-index:300;
+    position:absolute;
+    top:0;
+    height: 100vh;
+    width: 100vw;
+}
+#page1_trees{
+    pointer-events:none;
+    z-index:2;
+    top:0;
+    position:absolute;
+     height: 100vh;
+    width: 100vw;
+}
+#page1-arrowDiv{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    position:relative;
+}
+#page1-arrow{
+    padding: 6px;
+    display: block;
+    text-align:center;
+    z-index: 5;
+    position:absolute;
+    height: 48px;
+    width: 48px;
+    left: 48.4vw;
+    top: 90vh;
+}
+
+
+/* -------------------------------- */
+/* -------------page2---------------*/
+#page2main{
+    font-size:0;
+}
+#page2-bgDiv{
+    position: absolute;
+    height: 100vh;
+    width: 100vw;
+    padding:0;
+}
+#page2bgImg{
+    z-index:1;
+    pointer-events:none;
+    position:absolute;
+    height: 100vh;
+    width: 100vw;
+}
+#content2-ctn{
+    display: flex;
+    position:absolute;
+    height: 100%;
+    width: 100%;
+}
+#page2title{
+    text-shadow: 4px 4px rgb(17, 17, 17);
+    font-weight: bold;
+    font-size: 48px;
+    color: white;
+    z-index:3;
+    left: 5vw;
+    padding:0;
+    margin:0;
+    position: absolute;
+    top: 24vh;
+    bottom: 70vh;
+    width: 50%;
+}
+/* #page2textCtn{
+    display: flex;
+    margin-left: 5vw;
+    margin-top: 20vh;
+    margin-bottom: 30vh;
+    width: 50vw;
+} */
+.page2maintext{
+    line-height: 110%;
+    text-shadow: 4px 4px rgb(17, 17, 17);
+    left: 5vw;
+    padding:0;
+    margin:0;
+    position: absolute;
+    top: 35vh;
+    bottom: 45vh;
+    width: 50%;
+    height: auto;
+    font-size: 40px;
+    color: white;
+    z-index:3;
+}
+.page2subtext{
+    line-height: 125%;
+    text-shadow: 4px 4px rgb(17, 17, 17);
+    left: 5vw;
+    padding:0;
+    margin:0;
+    position: absolute;
+    top: 55vh;
+    bottom: 30vh;
+    width: 50%;
+    height: auto;
+    font-size: 30px;
+    color: white;
+    z-index:3;
+}
+
+/* -------------------------------- */
+/* -------------page3---------------*/
+
+#page3main{
+    pointer-events:none;
+    margin-top: 100vh;
+    height: 100vh;
+    font-size:0;
+}
+#page3bgDiv{
+    /* border-top: 1px solid black; */
+    
+    top: 200vh;
+    position: absolute;
+    height: 100vh;
+    width: 100vw;
+    padding:0;
+}
+#page3bgImg{
+    z-index:1;
+    pointer-events:none;
+    position:absolute;
+    height: 100vh;
+    width: 100vw;
+}
+#content3-ctn{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position:absolute;
+    height: 100%;
+    width: 100%;
+}
+#page3mainText{
+    z-index: 3;
+    top: 20vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* width: 15vw;
+    height: 10vh; */
+    position:absolute;
+}
+#page3h1{
+    z-index: 3;
+    position: absolute;
+    text-shadow: 2px 2px rgb(17, 17, 17);
+    color: white;
+    font-size: 4rem;
+    text-align: center;
+}
+#page3h2{
+    text-align: center;
+    top: 10vh;
+    width: 620px;
+    z-index: 3;
+    position: absolute;
+    text-shadow: 2px 2px rgb(17, 17, 17);
+    color: white;
+    font-size: 2rem;
+}
+/*------ frontmans ------*/
+#page3-frontmans-div{
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 30vh;
+    height: 128px;
+    width: 768px;
+}
+#frontmans-img{
+    height: 128px;
+    width: 768px;
+}
+
+/* #portal-img{
+    z-index: 20;
+    position:absolute;
+    top:50vh;
+    left: 50vw;
+    transform: scale(4)
+} */
+
+/* -------------------------------- */
+/* ------------nft-imgs-------------*/
+
+#nft-image-1{
+    transform:scale(0.2);
+    position:absolute;
+    top: 4vh;
+    left: 80vw;
+    z-index: 3;
+}
+#nft-image-2{
+    transform:scale(0.2);
+    position:absolute;
+    top: 38vh;
+    left: 62vw;
+    z-index:3;
+}
+#nft-image-3{
+    transform:scale(0.2);
+    position:absolute;
+    top: 64vh;
+    left: 82vw;
+    z-index:3;
+}
+
+/* -------------------------------- */
+/* ------------footer---------------*/
+
+.footer {
+      z-index: 31;
+      position: relative;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 140px;
+      background-color: #202124;
+      color: white;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+  }
+  #footer-main-content{
+      width: 90%;
+      height: 80%;
+  }
+  #footer-main-logo{
+      top: 30%;
+      position: absolute;
+  }
+  #footer-small-logo{
+      height: 48px;
+      width: 128px;
+  }
+  #footer-end-content{
+      z-index: 32;
+      position: relative;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 32px;
+      background-color: #0f1011;
+      color: white;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+  }
+  #trademark2022{
+      padding-left: 1.5vw;
+      padding-right: 1vw;
+      margin: 0;
+  }
+  .footer-end-list{
+      padding-right: 1vw;
+      font-size: 16px;
+      text-decoration: none;
+      list-style: none
+  }

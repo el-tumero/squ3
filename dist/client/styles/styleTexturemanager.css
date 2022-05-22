@@ -1,0 +1,219 @@
+body, html
+{
+    color: white;
+    background-color: #282C2F;
+    margin: 0 !important;
+    padding: 0 !important;
+    -ms-overflow-style: none !important;
+    scrollbar-width: none !important;
+    font-family: 'pixel_operatorregular';
+    scroll-behavior: smooth;
+}
+@font-face {
+    font-family: 'pixel_operatorregular';
+    src: url('./fonts/pixeloperator-webfont.woff2') format('woff2'),
+         url('./fonts/pixeloperator-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    /* color: rgb(255, 255, 255); */
+}
+
+/* -------------------------------- */
+/* ------------animations-----------*/
+
+#wrapper{
+    animation: fadeInAnimation ease 1s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+  
+@keyframes fadeInAnimation {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+/* -------------------------------- */
+/* --------------navbar-------------*/
+#header {
+    z-index: 100;
+    min-width: 640px;
+    display: grid;
+    justify-content: center; 
+    align-items: center;
+    width: 100vw;
+    height: 36px;
+    position: fixed;
+    top: 0;
+    background-color: #282C2F;
+    border-bottom: 4px solid #202124;
+}
+#navbar {
+    display:inline;
+    width:100vw;
+    overflow:hidden;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+.list {
+    width: 100vw;
+    color: white;
+}
+#li_home{
+    margin-left:2%;
+    float:left;
+}
+#li_game{
+    float: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+#li_play{
+    margin-right:2%;
+    float:right;
+}
+#li_marketplace{
+    margin-left: 14%;
+    float:none;
+}
+#li_readmore{
+    float:right;
+    margin-right: 20%;
+}
+a{
+    font-size: 1.5em;
+    color:white;
+}
+a:link {
+    color: white;
+}
+a:visited{
+    color: white;
+}
+
+/* -------------------------------- */
+/* ---------------page-- -----------*/
+#Page{
+    position:absolute;
+    height: 100vh;
+    width: 100vw;
+}
+#page_content{
+    position:absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    left: 25vw;
+    right: 25vw;
+    height: 100vh;
+    width: 50vw;
+    max-height: 100vh;
+    max-width: 50vw;
+    font-size: 2em;
+    padding:0;
+    margin:0;
+}
+#contractOutput{
+    max-width: 360px;
+    max-height: 360px;
+    margin:0;
+    padding:0;
+
+}
+
+
+/* -------------------------------- */
+/* -------------content-------------*/
+h1{
+    font-size: 32px;
+    padding:0;
+    margin:0;
+}
+#formDiv{
+    padding: 20px;
+    position:absolute;
+    height: auto;
+    width: auto;
+    background-color:  #1e3799;
+    border-bottom: 8px solid #0c2461;
+}
+#wrapper{
+    position:absolute;
+    height: 100%;
+    width: 100%;
+    background-color: #2D3436;
+}
+.mainButton{
+    position:relative;
+    z-index: 100;
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 80vh;
+}
+#connect{
+    z-index: 100;
+    position:absolute;
+    font-family : inherit;
+    font-size: 1.5em;
+    border:none;
+    background-color:  #1e3799;
+    border-bottom: 8px solid #0c2461;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    cursor: pointer;
+}
+#disconnect{
+    z-index: 101;
+    font-family : inherit;
+    font-size: 1.5em;
+    border:none;
+    background-color:  #1e3799;
+    border-bottom: 8px solid #0c2461;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    cursor: pointer;
+}
+#connected_address{
+    margin-top: 1vh;
+    padding:0;
+    position:absolute;
+    top: 100%;
+    font-size: 1.5em;
+}
+.hidden{
+    visibility:hidden;
+}
+.nftForm{
+    display:grid;
+    row-gap: 2vh;
+}
+.nftFormName{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin:0;
+    padding:0;
+    font-size: 1.5rem;   
+}
+#submit{
+    cursor: pointer;
+}
+#output{
+    margin-left: 30%;
+    margin-right: 30%;
+}
