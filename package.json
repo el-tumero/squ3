@@ -8,7 +8,7 @@
     "dev": "webpack --watch",
     "dserver": "nodemon dist/server",
     "server": "node dist/server",
-    "run": "node dist/server"
+    "start": "node dist/server"
   },
   "keywords": [],
   "author": "",
