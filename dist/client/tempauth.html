@@ -6,13 +6,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connect Wallet</title>
     <script defer src="scripts/auth.js"></script>
+    <link rel="stylesheet" href="styleTempauth.css">
 </head>
 <body>
-    <button id="connectWalletBtn">Connect Wallet!</button>
-    <button id="play">Play!</button>
-    <button id="checkSession">Check session</button>
-    <button id="logoutBtn">Log out!</button>
-    <p id="connected_address"></p>
-    <a href="/game">Enter!</a>
+
+    <div id="header">
+        <div id="navbar" class="list">
+            <a id="li_home"  href="texturemanager.html">Texture Manager</a>
+            <a id="li_game" href="index.html">Squ3</a>
+            <a id="li_play" href="game.html">Play</a>
+            <a id="li_marketplace" href="marketplace.html">Marketplace</a>
+            <a id="li_readmore" href="readmore.html">Read More</a>
+       </div>
+    </div>
+    <div id="wrapper-main">
+        <div id="main-content">
+            <div id="main-buttons">
+                <button class="authButton" id="connectWalletBtn">Connect Wallet!</button>
+                <button class="authButton" id="play">Play!</button>
+                <button class="authButton" id="checkSession">Check session</button>
+                <button class="authButton" id="logoutBtn">Log out!</button>
+                <p id="connected_address"></p>
+                
+            </div>    
+            <a class="authEnter" href="/game">Enter!</a>        
+
+        </div>
+
+    </div>
+    
+
+
+    
 </body>
 </html>

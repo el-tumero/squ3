@@ -301,7 +301,7 @@ app.get('/contractdata', async (req:Request, res:Response) => {
 
     const rawId:string = req.query.id as string
     const id = rawId.toLocaleLowerCase()
-    const indx = 0
+    const indx = 1
 
 
     const data = await getNftURI(id, indx)
