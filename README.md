@@ -7,6 +7,7 @@ Pixel Metaverse 4 all powered by Meter.io
 
 Information about a project and NFT-minter:
 https://teavver.github.io/squ3-opening-screen/
+(repo https://github.com/teavver/squ3-opening-screen )
 
 Accual virtalchat:
 https://squ3back.herokuapp.com/
