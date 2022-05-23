@@ -16,7 +16,7 @@ https://squ3back.herokuapp.com/
 
 1) Mint a nft token representing player's spritesheet, make it unique ;) @ https://teavver.github.io/squ3-opening-screen/ (texture manager)
 2) Enter accual game by clicking connect wallet then play and then "Enter" @ https://squ3back.herokuapp.com/
-3) Enjoy chatting with your friends in our custom made game
+3) Enjoy chatting with your friends in our custom made game (press T to open chat, and Esc to close it)
 4) Here is just a beginning
 
 ## From authors
