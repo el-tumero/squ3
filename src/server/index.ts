@@ -19,7 +19,7 @@ const web3:Web3 = new Web3(Web3.givenProvider)
 web3.setProvider(new Web3.providers.HttpProvider('https://rpctest.meter.io/'));
 
 const app:Express = express()
-const port:number = 3000
+const port:number = process.env.PORT as unknown as number
 const server = http.createServer(app)
 
 interface Database{
@@ -179,6 +179,7 @@ const sessionMiddleware = session({
 app.use(sessionMiddleware)
 
 app.use('/scripts', express.static(path.join(process.cwd(), 'dist/client/scripts')))
+app.use('/fonts', express.static(path.join(process.cwd(), 'dist/client/fonts')))
 app.use('/styles', express.static(path.join(process.cwd(), 'dist/client/styles')))
 app.use('/assets', express.static(path.join(process.cwd(), 'assets')))
 
@@ -301,7 +302,7 @@ app.get('/contractdata', async (req:Request, res:Response) => {
 
     const rawId:string = req.query.id as string
     const id = rawId.toLocaleLowerCase()
-    const indx = 1
+    const indx = 2
 
 
     const data = await getNftURI(id, indx)

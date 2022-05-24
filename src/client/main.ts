@@ -68,20 +68,23 @@ async function getUserId():Promise<boolean>{
     
 }
 
-
-
-
-
-
-// canvas 960x960
-
-
-
-function start(socket:Socket){
-
 const canvas = document.getElementById('canvas') as HTMLCanvasElement;
 const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 ctx.scale(1.5,1.5)
+changeCanvasSizeInHtml()
+
+
+
+function changeCanvasSizeInHtml(){
+    canvas.style.width = String((window.innerWidth/16)*8) + "px"
+    canvas.style.height = String((window.innerHeight/9)*8) + "px"
+}
+
+function start(socket:Socket){
+
+
+
+
 
 // loading texture atlas
 const atlasImg:HTMLImageElement = new Image();
