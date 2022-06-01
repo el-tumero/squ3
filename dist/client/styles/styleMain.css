@@ -1,3 +1,6 @@
+@import './mixins.scss';
+@import './colors.scss';
+
 body, html {
     background-color: #282C2F;
     margin: 0 !important;
